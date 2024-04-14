@@ -1,0 +1,13 @@
+.root{
+    -fx-background-color: #0D0D0D; /* Green */
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+}
+
+.root-first-block{
+    -fx-background-color:#042101;
+    -fx-pref-width:1300px;
+    -fx-pref-height:100px;
+    -fx-padding: 10px 20px;
+    -fx-spacing: 30px;
+}
