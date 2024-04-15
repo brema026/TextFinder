@@ -12,8 +12,10 @@ import java.util.Objects;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("App-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("View-Controllers/App-view.fxml"));
         Parent root = fxmlLoader.load();
+
+        AppController controller = fxmlLoader.getController();
 
         Scene scene = new Scene(root, 1300, 800);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styles.css")).toExternalForm());
