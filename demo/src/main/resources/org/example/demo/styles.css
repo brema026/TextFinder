@@ -1,13 +1,29 @@
 .root{
     -fx-background-color: #0D0D0D; /* Green */
     -fx-font-size: 16px;
-    -fx-padding: 10px 20px;
+    -fx-padding: 20px 20px;
 }
 
 .root-first-block{
-    -fx-background-color:#042101;
+    -fx-background-color:#0E2626;
+    -fx-background-radius:14px;
     -fx-pref-width:1300px;
     -fx-pref-height:100px;
-    -fx-padding: 10px 20px;
-    -fx-spacing: 30px;
+    -fx-padding: 25px 20px;
+    -fx-spacing: 20px;
+    -fx-border-color: #0A1C1C;
+    -fx-border-width: 5px;
+    -fx-border-radius: 14px;
+}
+
+.root-text{
+    -fx-font: 18px impact;
+    -fx-text-fill: white;
+}
+
+.find-text{
+    -fx-background-color: #0D0D0D;
+    -fx-background-radius: 8px;
+    -fx-font: 12px georgia;
+    -fx-text-fill:white;
 }
