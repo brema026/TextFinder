@@ -15,7 +15,11 @@ public class FinderController implements Initializable {
     @FXML
     private Button findButtom;
     @FXML
+    private Button fileButtom;
+    @FXML
     private Button addFileButtom;
+    @FXML
+    private Button deleteFileButtom;
     @FXML
     private TextField FinderText;
 
@@ -24,14 +28,24 @@ public class FinderController implements Initializable {
 
         //Create imageview with background image
         ImageView viewFind = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/find.png"))));
-        viewFind.setFitWidth(30);
-        viewFind.setFitHeight(30);
+        viewFind.setFitWidth(25);
+        viewFind.setFitHeight(25);
         findButtom.setGraphic(viewFind);
 
         ImageView openFileView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/open.png"))));
-        openFileView.setFitHeight(30);
-        openFileView.setFitWidth(30);
-        addFileButtom.setGraphic(openFileView);
+        openFileView.setFitHeight(25);
+        openFileView.setFitWidth(25);
+        fileButtom.setGraphic(openFileView);
+
+        ImageView addFileView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/add.png"))));
+        addFileView.setFitHeight(25);
+        addFileView.setFitWidth(25);
+        addFileButtom.setGraphic(addFileView);
+
+        ImageView deleteFileView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/delete.png"))));
+        deleteFileView.setFitWidth(25);
+        deleteFileView.setFitHeight(25);
+        deleteFileButtom.setGraphic(deleteFileView);
 
     }
 }

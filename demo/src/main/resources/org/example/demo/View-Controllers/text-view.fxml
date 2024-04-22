@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane styleClass="text-area-fond"  xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.TextAreaController">
+   <children>
+      <TextArea fx:id="textArea" styleClass="text-area" />
+   </children>
+</AnchorPane>

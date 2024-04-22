@@ -8,5 +8,6 @@
 
 <VBox prefHeight="1300" prefWidth="800.0" styleClass="root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.AppController">
     <HBox fx:id="sectionBox"/>
+    <VBox fx:id="sectionSecundaryBox"/>
 
 </VBox>
