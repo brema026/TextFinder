@@ -116,4 +116,27 @@ public class SinglyLinkedList<T> {
         }
         throw new NoSuchElementException();
     }
+
+    /**
+     * Gets the stored value in a given index from the list.
+     *
+     * @param index Index to get the value.
+     * @return The stored value in the given index.
+     * @throws IndexOutOfBoundsException If the given index it's out of the list range.
+     */
+    public T get(int index) {
+        if (!isEmpty() || index >= size) {
+            Node<T> current = head;
+            int currentIndex = 0;
+
+            while (currentIndex < index) {
+                current = current.next;
+                currentIndex++;
+            }
+            return current.value;
+
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
+    }
 }

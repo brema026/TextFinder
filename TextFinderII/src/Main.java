@@ -1,5 +1,6 @@
 import dataStructures.SinglyLinkedList;
 
+import java.io.File;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,13 +9,22 @@ public class Main {
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        SinglyLinkedList<Integer> list = new SinglyLinkedList<>();
-        int element = 2;
-        list.add(element);
+        LibraryManager libraryManager = new LibraryManager();
+
+        File file = new File("src/hello.txt");
+
         try {
-            list.remove(56);
-        } catch (NoSuchElementException e) {
-            logger.log(Level.WARNING, "You can't remove the element " + element + " because is not contained on the list.", e);
+            libraryManager.addFile(file);
+            SinglyLinkedList<Document> documentList = libraryManager.getDocuments();
+            Document doc = documentList.get(0);
+            System.out.println(doc.getContent());
+            System.out.println(doc.getFormattedDate());
+            System.out.println(doc.getSize());
+
+
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 }
