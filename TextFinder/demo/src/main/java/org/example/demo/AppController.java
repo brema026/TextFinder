@@ -17,16 +17,20 @@ public class AppController implements Initializable {
 
     private FinderController finderController;
     private TextAreaController textAreaController;
+
+    private OrderViewController orderController;
     @FXML
     public HBox sectionBox;
     @FXML
-    public VBox sectionSecundaryBox;
+    public HBox sectionSecundaryBox;
+
+    public VBox sectionOrderBox;
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
         loadFinderSection();
         loadTextSection();
-
+        loadOrderSection();
     }
 
     private void loadFinderSection() {
@@ -47,6 +51,18 @@ public class AppController implements Initializable {
             Parent textSection = loader.load();
             textAreaController = loader.getController();
             sectionSecundaryBox.getChildren().add(textSection);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    private void loadOrderSection(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("View-Controllers/order-view.fxml"));
+            Parent orderSection = loader.load();
+            orderController = loader.getController();
+            sectionSecundaryBox.getChildren().add(orderSection);
+
         }
         catch (IOException e){
             e.printStackTrace();
