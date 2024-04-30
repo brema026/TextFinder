@@ -11,6 +11,13 @@ public class DocumentIndexer {
         this.index = new AVLTree();
     }
 
+    // Método para indizar una lista de documentos
+    public void indexDocuments(List<Document> documents) {
+        for (Document document : documents) {
+            indexDocument(document);
+        }
+    }
+
     // Método para indizar un documento
     public void indexDocument(Document document) {
         String content = document.getContent();
