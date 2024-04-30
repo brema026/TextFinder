@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/TextFinder.iml" filepath="$PROJECT_DIR$/.idea/TextFinder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TextFinder/demo/TextFinder.iml" filepath="$PROJECT_DIR$/TextFinder/demo/TextFinder.iml" />
     </modules>
   </component>
 </project>
