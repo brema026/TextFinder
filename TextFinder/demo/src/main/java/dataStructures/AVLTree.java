@@ -1,13 +1,23 @@
 package dataStructures;
 
+import org.example.demo.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
 class AVLNode {
-    int key, height;
+    String word;
+    List<Document> occurrences;
+    int height;
     AVLNode left, right;
 
-    AVLNode(int key) {
-        this.key = key;
+    AVLNode(String word, Document document) {
+        this.word = word;
+        this.occurrences = new ArrayList<>();
+        this.occurrences.add(document);
         this.height = 1;
-        this.left = this.right = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
@@ -16,16 +26,7 @@ public class AVLTree {
 
     // Get height of node
     private int height(AVLNode node) {
-        if (node == null)
-            return 0;
-        return node.height;
-    }
-
-    // Get balance factor of node
-    private int getBalance(AVLNode node) {
-        if (node == null)
-            return 0;
-        return height(node.left) - height(node.right);
+        return node == null ? 0 : node.height;
     }
 
     // Right rotate subtree rooted with y
@@ -60,23 +61,29 @@ public class AVLTree {
         return y;
     }
 
-    // Insert a key into the tree
-    public void insert(int key) {
-        root = insertRecursive(root, key);
+    // Get balance factor of node
+    private int getBalance(AVLNode node) {
+        return node == null ? 0 : height(node.left) - height(node.right);
     }
 
-    // Recursive function to insert a key into the tree
-    private AVLNode insertRecursive(AVLNode node, int key) {
+    // Insert a word and its occurrence into the tree
+    public void insert(String word, Document document) {
+        root = insertRecursive(root, word, document);
+    }
+
+    // Recursive function to insert a word and its occurrence into the tree
+    private AVLNode insertRecursive(AVLNode node, String word, Document document) {
         // Perform normal BST insertion
         if (node == null)
-            return new AVLNode(key);
+            return new AVLNode(word, document);
 
-        if (key < node.key)
-            node.left = insertRecursive(node.left, key);
-        else if (key > node.key)
-            node.right = insertRecursive(node.right, key);
-        else // Duplicate keys not allowed
-            return node;
+        int compare = word.compareTo(node.word);
+        if (compare < 0)
+            node.left = insertRecursive(node.left, word, document);
+        else if (compare > 0)
+            node.right = insertRecursive(node.right, word, document);
+        else
+            node.occurrences.add(document); // Word already exists, add occurrence to the list
 
         // Update height of this ancestor node
         node.height = 1 + Math.max(height(node.left), height(node.right));
@@ -86,21 +93,21 @@ public class AVLTree {
 
         // If node becomes unbalanced, perform rotations
         // Left Left Case
-        if (balance > 1 && key < node.left.key)
+        if (balance > 1 && word.compareTo(node.left.word) < 0)
             return rightRotate(node);
 
         // Right Right Case
-        if (balance < -1 && key > node.right.key)
+        if (balance < -1 && word.compareTo(node.right.word) > 0)
             return leftRotate(node);
 
         // Left Right Case
-        if (balance > 1 && key > node.left.key) {
+        if (balance > 1 && word.compareTo(node.left.word) > 0) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
 
         // Right Left Case
-        if (balance < -1 && key < node.right.key) {
+        if (balance < -1 && word.compareTo(node.right.word) < 0) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
         }
@@ -108,20 +115,23 @@ public class AVLTree {
         return node;
     }
 
-    // Search for a key in the tree
-    public boolean search(int key) {
-        return searchRecursive(root, key);
+    // Search for a word in the tree and return its occurrences
+    public List<Document> search(String word) {
+        return searchRecursive(root, word);
     }
 
-    // Recursive function to search for a key in the tree
-    private boolean searchRecursive(AVLNode node, int key) {
+    // Recursive function to search for a word in the tree
+    private List<Document> searchRecursive(AVLNode node, String word) {
+        List<Document> result = new ArrayList<>();
         if (node == null)
-            return false;
-        if (key == node.key)
-            return true;
-        if (key < node.key)
-            return searchRecursive(node.left, key);
-        else
-            return searchRecursive(node.right, key);
+            return result;
+        int compare = word.compareTo(node.word);
+        if (compare == 0)
+            result.addAll(node.occurrences);
+        if (compare < 0)
+            result.addAll(searchRecursive(node.left, word));
+        if (compare > 0)
+            result.addAll(searchRecursive(node.right, word));
+        return result;
     }
 }
