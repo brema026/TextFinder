@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox styleClass="root-first-block" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.OrderViewController">
+<VBox styleClass="order-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.OrderViewController">
    <children>
-      <VBox prefHeight="504.0" prefWidth="538.0">
+      <VBox>
          <children>
              <ComboBox promptText="Organizar por">
                  <items>
@@ -22,4 +22,4 @@
          </children>
       </VBox>
    </children>
-</HBox>
+</VBox>

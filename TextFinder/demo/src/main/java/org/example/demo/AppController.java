@@ -11,26 +11,27 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
-
 public class AppController implements Initializable {
 
     private FinderController finderController;
     private TextAreaController textAreaController;
-
     private OrderViewController orderController;
+    private ResultController resultController;
     @FXML
     public HBox sectionBox;
     @FXML
-    public HBox sectionSecundaryBox;
-
+    public VBox sectionSecundaryBox;
+    @FXML
     public VBox sectionOrderBox;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
         loadFinderSection();
         loadTextSection();
         loadOrderSection();
+        loadResultSection();
+
     }
 
     private void loadFinderSection() {
@@ -61,7 +62,20 @@ public class AppController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("View-Controllers/order-view.fxml"));
             Parent orderSection = loader.load();
             orderController = loader.getController();
-            sectionSecundaryBox.getChildren().add(orderSection);
+            sectionOrderBox.getChildren().add(orderSection);
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadResultSection(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("View-Controllers/result-view.fxml"));
+            Parent resultSection = loader.load();
+            resultController = loader.getController();
+            sectionOrderBox.getChildren().add(resultSection);
 
         }
         catch (IOException e){

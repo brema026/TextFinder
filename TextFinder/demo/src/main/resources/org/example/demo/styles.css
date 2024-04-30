@@ -1,6 +1,6 @@
 .root{
     -fx-background-color: #0D0D0D; /* Green */
-    -fx-font-size: 16px;
+    -fx-font-size: 14px;
     -fx-padding: 20px 20px;
     -fx-spacing: 20px;
 }
@@ -17,12 +17,10 @@
     -fx-border-radius: 18px;
     -fx-alignment: center;
 }
-
 .root-text{
     -fx-font: 22px impact;
     -fx-text-fill: white;
 }
-
 .find-text{
     -fx-background-color: #0D0D0D;
     -fx-background-radius: 8px;
@@ -35,15 +33,30 @@
     -fx-border-color:transparent;
 }
 
-.text-area-fond{
-    -fx-max-width:800px;
-    -fx-pref-height:600px;
-    -fx-background-color: #000000;
-    -fx-background-radius: 50px;
-}
 .text-area{
-    -fx-max-width:800px;
     -fx-pref-height:600px;
-    -fx-fill: transparent;
-    -fx-fill-text: white;
+    -fx-pref-width: 800px;
+    -fx-background-color: #0D0D0D;
+}
+.order-area{
+    -fx-background-color:#0E2626;
+    -fx-background-radius:19px;
+    -fx-pref-width: 420px;
+    -fx-pref-height:150px;
+    -fx-padding: 25px 30px;
+    -fx-spacing: 25px;
+    -fx-border-color: #0A1C1C;
+    -fx-border-width: 6px;
+    -fx-border-radius: 18px;
+}
+
+.result-area{
+    -fx-background-color:#0E2626;
+    -fx-background-radius:19px;
+    -fx-pref-width:420px;
+    -fx-pref-height:450px;
+    -fx-spacing: 25px;
+    -fx-border-color: #0A1C1C;
+    -fx-border-width: 6px;
+    -fx-border-radius: 18px;
 }

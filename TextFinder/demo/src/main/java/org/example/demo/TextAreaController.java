@@ -12,8 +12,8 @@ import javafx.scene.control.TextArea;
 public class TextAreaController implements Initializable {
     @FXML
     private TextArea textArea;
-
     public void initialize(URL location, ResourceBundle resources){
-
+        textArea.setEditable(false);
     }
+
 }
