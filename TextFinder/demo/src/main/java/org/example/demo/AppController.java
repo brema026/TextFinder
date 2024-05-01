@@ -1,5 +1,7 @@
 package org.example.demo;
 
+import dataStructures.AVLTree;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,18 +22,18 @@ public class AppController implements Initializable {
     @FXML
     public HBox sectionBox;
     @FXML
-    public VBox sectionSecundaryBox;
+    public VBox sectionSecondaryBox;
     @FXML
     public VBox sectionOrderBox;
 
+    public static AVLTree avlTree;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
         loadFinderSection();
         loadTextSection();
         loadOrderSection();
         loadResultSection();
-
     }
 
     private void loadFinderSection() {
@@ -51,7 +53,7 @@ public class AppController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("View-Controllers/text-view.fxml"));
             Parent textSection = loader.load();
             textAreaController = loader.getController();
-            sectionSecundaryBox.getChildren().add(textSection);
+            sectionSecondaryBox.getChildren().add(textSection);
         }
         catch (IOException e){
             e.printStackTrace();
