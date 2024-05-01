@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import dataStructures.AVLTree;
+import dataStructures.SinglyLinkedList;
 
 public class TextFinder {
     /**
@@ -38,17 +39,36 @@ public class TextFinder {
      * @return Result array that contains the founded word's data.
      */
     private Result[] findWord(String word, AVLTree avlTree) {
-        /*
-            1. Buscar por medio del metodo de busqueda del arbol la palabra
-            2. Si devuelve una lista the ocurrencias -> Paso 3 /  De lo contrario devolver un array vacio
-            3. Crear un array de results vacio del tamaño de la lista de ocurrencias
-            -Por cada ocurrencia
-            6. Crear un objeto resultado
-            7. Agregar el resultado a la lista
-            - Al finalizar
-            8. Devolver el array con los resultados
-         */
-        return null;
+        //  Search word in the AVL Tree
+        TextData foundedWordData = avlTree.search(word);
+
+        if (foundedWordData != null) {
+            //  Get occurrences from the founded word data
+            SinglyLinkedList<Occurrence> occurrences = foundedWordData.getOccurrences();
+
+            //  Create an empty array with the size of the occurrences list to store all results
+            int resultsSize = occurrences.getSize();
+            Result[] results = new Result[resultsSize];
+
+            int currentIndex = 0;
+            while (currentIndex < resultsSize) {
+                Occurrence currentOccurrence = occurrences.get(currentIndex);
+
+                //  Create a Result object from the current occurrence
+                Document occurrenceDocument = currentOccurrence.getDocument();
+                String documentContent = occurrenceDocument.getContent();
+                int occurrencePosition = currentOccurrence.getPosition();
+                Result result = new Result(occurrenceDocument, documentContent, occurrencePosition);
+
+                //  Add the result object to the result array
+                results[currentIndex] = result;
+                currentIndex++;
+            }
+            return results;
+
+        } else {
+            return new Result[0];
+        }
     }
 
     /**

@@ -4,7 +4,7 @@ import dataStructures.SinglyLinkedList;
 
 public class TextData {
     String text;
-    SinglyLinkedList<Occurrence> occurrences;
+    SinglyLinkedList<Occurrence> occurrences = new SinglyLinkedList<>();
 
     public TextData(String text, Occurrence occurrence) {
         this.text = text;
