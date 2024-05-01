@@ -63,7 +63,7 @@ public class FinderController implements Initializable {
         String text = finderText.getText();
 
         if (!text.isEmpty()) {
-//            TextFinder textFinder = new TextFinder();
+            TextFinder textFinder = new TextFinder();
 //            Result[] results = textFinder.findText(text, avlTree);
 //            System.out.println(results[0].fragment); // Temp
             System.out.println(text);

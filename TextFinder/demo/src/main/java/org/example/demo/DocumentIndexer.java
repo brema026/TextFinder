@@ -29,7 +29,7 @@ public class DocumentIndexer {
     }
 
     // Método para buscar texto en los documentos indexados
-    public SinglyLinkedList<TextData> search(String query) {
+    public TextData search(String query) {
         return index.search(query.toLowerCase()); // Convertir a minúsculas para normalización
     }
 }

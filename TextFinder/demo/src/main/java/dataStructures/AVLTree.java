@@ -112,22 +112,24 @@ public class AVLTree {
     }
 
     // Search for a word in the tree and return its occurrences
-    public SinglyLinkedList<TextData> search(String word) {
+    public TextData search(String word) {
         return searchRecursive(root, word);
     }
 
     // Recursive function to search for a word in the tree
-    private SinglyLinkedList<TextData> searchRecursive(AVLNode node, String word) {
-        SinglyLinkedList<TextData> result = new SinglyLinkedList<>();
+    private TextData searchRecursive(AVLNode node, String word) {
         if (node == null)
-            return result;
+            return null;
+
         int compare = word.compareTo(node.key.getText());
-        if (compare == 0)
-            result.add(node.key);
-        if (compare < 0)
-            result.addAll(searchRecursive(node.left, word));
-        if (compare > 0)
-            result.addAll(searchRecursive(node.right, word));
-        return result;
+        if (compare == 0) {
+            return node.key;
+
+        } else if (compare < 0) {
+            return searchRecursive(node.left, word);
+
+        } else {
+            return searchRecursive(node.right, word);
+        }
     }
 }
