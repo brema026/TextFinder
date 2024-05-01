@@ -139,4 +139,20 @@ public class SinglyLinkedList<T> {
             throw new IndexOutOfBoundsException();
         }
     }
+
+    /**
+     * Adds to the end all contained elements from a given SinglyLinkedList
+     * @param list List to add to the actual list.
+     */
+    public void addAll(SinglyLinkedList<T> list) {
+        int listSize = list.getSize();
+        if (listSize > 0) {
+            int currentIndex = 0;
+            while (currentIndex < listSize) {
+                T newElement = list.get(currentIndex);
+                add(newElement);
+                currentIndex++;
+            }
+        }
+    }
 }

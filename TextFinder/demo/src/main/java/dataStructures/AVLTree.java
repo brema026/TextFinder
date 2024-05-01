@@ -1,20 +1,16 @@
 package dataStructures;
 
 import org.example.demo.Document;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.example.demo.Occurrence;
+import org.example.demo.TextData;
 
 class AVLNode {
-    String word;
-    List<Document> occurrences;
+    TextData key;
     int height;
     AVLNode left, right;
 
-    AVLNode(String word, Document document) {
-        this.word = word;
-        this.occurrences = new ArrayList<>();
-        this.occurrences.add(document);
+    AVLNode(TextData key) {
+        this.key = key;
         this.height = 1;
         this.left = null;
         this.right = null;
@@ -67,23 +63,23 @@ public class AVLTree {
     }
 
     // Insert a word and its occurrence into the tree
-    public void insert(String word, Document document) {
-        root = insertRecursive(root, word, document);
+    public void insert(String word, Document document, int position) {
+        root = insertRecursive(root, word, document, position);
     }
 
     // Recursive function to insert a word and its occurrence into the tree
-    private AVLNode insertRecursive(AVLNode node, String word, Document document) {
+    private AVLNode insertRecursive(AVLNode node, String word, Document document, int position) {
         // Perform normal BST insertion
         if (node == null)
-            return new AVLNode(word, document);
+            return new AVLNode(new TextData(word, new Occurrence(document, position)));
 
-        int compare = word.compareTo(node.word);
+        int compare = word.compareTo(node.key.getText());
         if (compare < 0)
-            node.left = insertRecursive(node.left, word, document);
+            node.left = insertRecursive(node.left, word, document, position);
         else if (compare > 0)
-            node.right = insertRecursive(node.right, word, document);
+            node.right = insertRecursive(node.right, word, document, position);
         else
-            node.occurrences.add(document); // Word already exists, add occurrence to the list
+            node.key.addOccurrence(new Occurrence(document, position)); // Word already exists, add occurrence to the list
 
         // Update height of this ancestor node
         node.height = 1 + Math.max(height(node.left), height(node.right));
@@ -93,21 +89,21 @@ public class AVLTree {
 
         // If node becomes unbalanced, perform rotations
         // Left Left Case
-        if (balance > 1 && word.compareTo(node.left.word) < 0)
+        if (balance > 1 && word.compareTo(node.left.key.getText()) < 0)
             return rightRotate(node);
 
         // Right Right Case
-        if (balance < -1 && word.compareTo(node.right.word) > 0)
+        if (balance < -1 && word.compareTo(node.right.key.getText()) > 0)
             return leftRotate(node);
 
         // Left Right Case
-        if (balance > 1 && word.compareTo(node.left.word) > 0) {
+        if (balance > 1 && word.compareTo(node.left.key.getText()) > 0) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
 
         // Right Left Case
-        if (balance < -1 && word.compareTo(node.right.word) < 0) {
+        if (balance < -1 && word.compareTo(node.right.key.getText()) < 0) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
         }
@@ -116,18 +112,18 @@ public class AVLTree {
     }
 
     // Search for a word in the tree and return its occurrences
-    public List<Document> search(String word) {
+    public SinglyLinkedList<TextData> search(String word) {
         return searchRecursive(root, word);
     }
 
     // Recursive function to search for a word in the tree
-    private List<Document> searchRecursive(AVLNode node, String word) {
-        List<Document> result = new ArrayList<>();
+    private SinglyLinkedList<TextData> searchRecursive(AVLNode node, String word) {
+        SinglyLinkedList<TextData> result = new SinglyLinkedList<>();
         if (node == null)
             return result;
-        int compare = word.compareTo(node.word);
+        int compare = word.compareTo(node.key.getText());
         if (compare == 0)
-            result.addAll(node.occurrences);
+            result.add(node.key);
         if (compare < 0)
             result.addAll(searchRecursive(node.left, word));
         if (compare > 0)

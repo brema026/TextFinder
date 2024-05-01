@@ -1,6 +1,7 @@
 package org.example.demo;
 
 import dataStructures.AVLTree;
+import dataStructures.SinglyLinkedList;
 
 import java.util.List;
 
@@ -12,23 +13,23 @@ public class DocumentIndexer {
     }
 
     // Método para indizar una lista de documentos
-    public void indexDocuments(List<Document> documents) {
+    public void indexDocuments(List<Document> documents, int position) {
         for (Document document : documents) {
-            indexDocument(document);
+            indexDocument(document, position);
         }
     }
 
     // Método para indizar un documento
-    public void indexDocument(Document document) {
+    public void indexDocument(Document document, int position) {
         String content = document.getContent();
         String[] words = content.split("\\s+"); // Dividir el contenido en palabras
         for (String word : words) {
-            index.insert(word.toLowerCase(), document); // Convertir a minúsculas para normalización
+            index.insert(word.toLowerCase(), document, position); // Convertir a minúsculas para normalización
         }
     }
 
     // Método para buscar texto en los documentos indexados
-    public List<Document> search(String query) {
+    public SinglyLinkedList<TextData> search(String query) {
         return index.search(query.toLowerCase()); // Convertir a minúsculas para normalización
     }
 }
