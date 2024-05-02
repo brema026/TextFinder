@@ -3,6 +3,8 @@ package org.example.demo;
 import dataStructures.AVLTree;
 import dataStructures.SinglyLinkedList;
 
+import java.util.Arrays;
+
 public class TextFinder {
     /**
      * Search for a given text in the AVL Tree.
@@ -55,10 +57,7 @@ public class TextFinder {
                 Occurrence currentOccurrence = occurrences.get(currentIndex);
 
                 //  Create a Result object from the current occurrence
-                Document occurrenceDocument = currentOccurrence.getDocument();
-                String documentContent = occurrenceDocument.getContent();
-                int occurrencePosition = currentOccurrence.getPosition();
-                Result result = new Result(occurrenceDocument, documentContent, occurrencePosition);
+                Result result = createResultFromOccurrence(currentOccurrence);
 
                 //  Add the result object to the result array
                 results[currentIndex] = result;
@@ -79,21 +78,122 @@ public class TextFinder {
      * @return Result array that contains the founded word's data.
      */
     private Result[] findPhrase(String phrase, AVLTree avlTree) {
-        /*
-            1. Dividir la frase en un array de strings por medio del metodo split(" ")
-            2. Busca la primera palabra por medio del metodo findWord()
-            3. Si devuelve una lista de resultados -> Paso 3 / De lo contrario devuelve una lista vacia
-            4. Crear una lista simplemente enlazada de results vacio
-            - Por cada resultado
-            5. Separar las palabras en el fragment del resultado utilizando el metodo split("delimitadores")
-            6. Del array obtenido obtener la palabra que sigue utilizando la posicion del resultado (Se le suma 1 para obtener la palabra siguiente)
-            7. Comparar la palabra obtenida con la siguiente palabra de la frase
-            Si la palabra es igual y no quedan mas palabras en la frase -> Crear un objeto resultado y agregarlo a la lista de resultados
-            Si la palabra es igual y quedan mas palabras en la frase -> repetir el proceso desde el paso 5 con la palabra que sigue
-            - Al finalizar
-            8. Pasar la lista de resultados a un arrary del tamaño de la lista
-            9. Devolver el array con los resultados
-         */
-        return null;
+        //  Separate phrase words
+        String[] phraseWords = phrase.split("\\P{L}+");
+
+        //  Search the first phrase word on the AVLTree
+        String firstWord = phraseWords[0];
+        TextData foundedWordData = avlTree.search(firstWord);
+
+        if (foundedWordData != null) {
+            // Remove the first word from the phrase words list
+            phraseWords = Arrays.copyOfRange(phraseWords, 1, phraseWords.length);
+
+            //  Get occurrences from the founded word data
+            SinglyLinkedList<Occurrence> occurrences = foundedWordData.getOccurrences();
+
+            //  Create an empty SinglyLinkedList to store the results
+            SinglyLinkedList<Result> results = new SinglyLinkedList<>();
+
+            int occurrencesSize = occurrences.getSize();
+            int currentOccurrenceIndex = 0;
+            while (currentOccurrenceIndex < occurrencesSize) {
+                Occurrence currentOccurrence = occurrences.get(currentOccurrenceIndex);
+
+                // Get the phrase occurrence words
+                int phraseSize = phraseWords.length;
+                String[] phraseOccurrenceWords = getPhraseOccurrenceWords(currentOccurrence, phraseSize);
+
+                // Compare both phrase's words
+                boolean samePhrases = comparePhrases(phraseWords, phraseOccurrenceWords);
+                if (samePhrases) {
+                    //  Create a Result object from the current occurrence
+                    Result result = createResultFromOccurrence(currentOccurrence);
+
+                    // Add the result object to the list
+                    results.add(result);
+                }
+                currentOccurrenceIndex++;
+
+            }
+
+            // Transform the SinglyLinkedList to an array and return it
+            return singlyLinkedListToArray(results);
+
+        } else {
+            return new Result[0];
+        }
+    }
+
+    /**
+     * Creates a Result object from a given Occurrence.
+     *
+     * @param occurrence Occurrence to create the Result object.
+     * @return The created Result object.
+     */
+    private Result createResultFromOccurrence(Occurrence occurrence) {
+        Document occurrenceDocument = occurrence.getDocument();
+        String documentContent = occurrenceDocument.getContent();
+        int occurrencePosition = occurrence.getPosition();
+
+        return new Result(occurrenceDocument, documentContent, occurrencePosition);
+    }
+
+    /**
+     * Gets the phrase words of a given occurrence.
+     *
+     * @param occurrence Occurrence where the phrase is contained.
+     * @param phraseSize Amount of words in the phrase.
+     * @return A String array with the phrase words.
+     */
+    private String[] getPhraseOccurrenceWords(Occurrence occurrence, int phraseSize) {
+        String occurrenceDocumentContent = occurrence.getDocument().getContent();
+        int occurrencePosition = occurrence.getPosition();
+        String[] occurrenceDocumentWords = occurrenceDocumentContent.split("\\P{L}+");
+
+        int phraseStartIndex = occurrencePosition + 1;
+        int phraseFinalIndex = phraseStartIndex + phraseSize;
+        return Arrays.copyOfRange(occurrenceDocumentWords, phraseStartIndex, phraseFinalIndex);
+    }
+
+    /**
+     * Compare if two phrases are the same.
+     *
+     * @param phraseWords Original phrase to compare.
+     * @param phraseOccurrenceWords The phrase occurrence to check.
+     * @return Boolean values that represents if both phrases are the same.
+     */
+    private boolean comparePhrases(String[] phraseWords, String[] phraseOccurrenceWords) {
+        int currentIndex = 0;
+        int phrasesSize = phraseWords.length;
+
+        while (currentIndex < phrasesSize) {
+            String phraseWord = phraseWords[currentIndex];
+            String phraseOccurrenceWord = phraseOccurrenceWords[currentIndex];
+            if (!phraseWord.equals(phraseOccurrenceWord)) {
+                return false;
+            }
+
+            currentIndex++;
+        }
+        return true;
+    }
+
+    /**
+     * Converts the linked list to an array.
+     *
+     * @param list List to convert.
+     * @return An array containing the elements of the linked list.
+     */
+    public Result[] singlyLinkedListToArray(SinglyLinkedList<Result> list) {
+        int arraySize = list.getSize();
+        Result[] array = new Result[arraySize];
+        int currentIndex = 0;
+        while (currentIndex < arraySize) {
+            Result currentResult = list.get(currentIndex);
+            array[currentIndex] = currentResult;
+            currentIndex++;
+        }
+        return array;
     }
 }

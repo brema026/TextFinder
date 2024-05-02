@@ -1,6 +1,7 @@
 package dataStructures;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * Class for a SinglyLinkedList Node.
@@ -142,6 +143,7 @@ public class SinglyLinkedList<T> {
 
     /**
      * Adds to the end all contained elements from a given SinglyLinkedList
+     *
      * @param list List to add to the actual list.
      */
     public void addAll(SinglyLinkedList<T> list) {
