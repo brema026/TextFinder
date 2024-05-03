@@ -1,5 +1,6 @@
 package dataStructures;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -15,7 +16,7 @@ class Node<T> {
     }
 }
 
-public class SinglyLinkedList<T> {
+public class SinglyLinkedList<T> implements Iterable<T> {
     private Node<T> head;
     private int size;
 
@@ -155,4 +156,40 @@ public class SinglyLinkedList<T> {
             }
         }
     }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node<T> current = head;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                T value = current.value;
+                current = current.next;
+                return value;
+            }
+        };
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("[");
+        Node<T> current = head;
+        while (current != null) {
+            result.append(current.value);
+            if (current.next != null) {
+                result.append(", ");
+            }
+            current = current.next;
+        }
+        result.append("]");
+        return result.toString();
+    }
+
 }

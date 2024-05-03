@@ -78,7 +78,7 @@ public class AppController implements Initializable {
             Parent resultSection = loader.load();
             resultController = loader.getController();
             sectionOrderBox.getChildren().add(resultSection);
-
+            System.out.println("ResultController loaded successfully: " + resultController);
         }
         catch (IOException e){
             e.printStackTrace();

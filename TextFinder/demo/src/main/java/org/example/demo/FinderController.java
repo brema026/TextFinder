@@ -1,17 +1,25 @@
 package org.example.demo;
 
+import dataStructures.SinglyLinkedList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import java.io.File;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 
 public class FinderController implements Initializable {
+
     @FXML
     private Button findButton;
     @FXML
@@ -22,8 +30,17 @@ public class FinderController implements Initializable {
     private Button deleteFileButton;
     @FXML
     private TextField finderText;
+    @FXML
+    private ListView<String> libraryListView;
+    private LibraryManager libraryManager;
 
+    public FinderController() {
+        libraryManager = LibraryManager.getInstance();
+    }
+
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         // Create imageview with background image
         ImageView viewFind = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/find.png"))));
         viewFind.setFitWidth(25);
@@ -73,4 +90,42 @@ public class FinderController implements Initializable {
         }
     }
 
+    @FXML
+    public void handleFileButton() {
+        Stage stage = (Stage) fileButton.getScene().getWindow();
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select File");
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            try {
+                libraryManager.addFile(selectedFile);
+                System.out.println("Document List after adding file: " + libraryManager.getDocuments());
+                refreshListView(); // Llama al método para actualizar la lista
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Método para actualizar la ListView con los nombres de los archivos
+     */
+    private void refreshListView() {
+        ObservableList<String> items = FXCollections.observableArrayList();
+
+        SinglyLinkedList<Document> documents = libraryManager.getDocuments();
+        System.out.println("Tamaño de la lista de documentos: " + documents.getSize());
+
+        for (int i = 0; i < documents.getSize(); i++) {
+            Document document = documents.get(i);
+            items.add(document.getFileName());
+        }
+
+        System.out.println("Items antes de establecerla en la ListView: " + items);
+
+        libraryListView.setItems(items);
+        libraryListView.refresh();
+    }
 }
