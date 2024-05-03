@@ -102,16 +102,13 @@ public class FinderController implements Initializable {
             try {
                 libraryManager.addFile(selectedFile);
                 System.out.println("Document List after adding file: " + libraryManager.getDocuments());
-                refreshListView(); // Llama al método para actualizar la lista
+                refreshListView();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    /**
-     * Método para actualizar la ListView con los nombres de los archivos
-     */
     private void refreshListView() {
         ObservableList<String> items = FXCollections.observableArrayList();
 
