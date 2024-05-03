@@ -34,6 +34,8 @@ public class AppController implements Initializable {
         loadTextSection();
         loadOrderSection();
         loadResultSection();
+        // Configurar el controlador del área de texto en el controlador del buscador
+        finderController.setTextAreaController(textAreaController);
     }
 
     private void loadFinderSection() {
