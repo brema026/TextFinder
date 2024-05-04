@@ -140,7 +140,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
             throw new IndexOutOfBoundsException();
         }
     }
-
+  
     /**
      * Adds to the end all contained elements from a given SinglyLinkedList
      * @param list List to add to the actual list.
