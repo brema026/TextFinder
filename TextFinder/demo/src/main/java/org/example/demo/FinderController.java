@@ -4,6 +4,7 @@ import dataStructures.SinglyLinkedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -33,6 +34,7 @@ public class FinderController implements Initializable {
     @FXML
     private ListView<String> libraryListView;
     private LibraryManager libraryManager;
+    private TextAreaController textAreaController;
 
     public FinderController() {
         libraryManager = LibraryManager.getInstance();
@@ -90,6 +92,10 @@ public class FinderController implements Initializable {
         }
     }
 
+    public void setTextAreaController(TextAreaController textAreaController) {
+        this.textAreaController = textAreaController;
+    }
+
     @FXML
     public void handleFileButton() {
         Stage stage = (Stage) fileButton.getScene().getWindow();
@@ -103,6 +109,17 @@ public class FinderController implements Initializable {
                 libraryManager.addFile(selectedFile);
                 System.out.println("Document List after adding file: " + libraryManager.getDocuments());
                 refreshListView();
+
+                // Parsear el contenido del archivo
+                String content = DocumentParser.parseDocument(selectedFile);
+
+                // Mostrar el contenido en el TextArea
+                if (textAreaController != null) {
+                    textAreaController.setContent(content);
+                } else {
+                    System.err.println("TextAreaController no ha sido inicializado.");
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
