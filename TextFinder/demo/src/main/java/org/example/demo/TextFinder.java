@@ -57,7 +57,7 @@ public class TextFinder {
                 Occurrence currentOccurrence = occurrences.get(currentIndex);
 
                 //  Create a Result object from the current occurrence
-                Result result = createResultFromOccurrence(currentOccurrence);
+                Result result = createResultFromOccurrence(currentOccurrence, false, -1);
 
                 //  Add the result object to the result array
                 results[currentIndex] = result;
@@ -108,7 +108,8 @@ public class TextFinder {
                 boolean samePhrases = comparePhrases(phraseWords, phraseOccurrenceWords);
                 if (samePhrases) {
                     //  Create a Result object from the current occurrence
-                    Result result = createResultFromOccurrence(currentOccurrence);
+                    int phraseEndPosition = currentOccurrence.getPosition() + phraseSize;
+                    Result result = createResultFromOccurrence(currentOccurrence, true, phraseEndPosition);
 
                     // Add the result object to the list
                     results.add(result);
@@ -126,17 +127,24 @@ public class TextFinder {
     }
 
     /**
-     * Creates a Result object from a given Occurrence.
+     * Creates a Result object from a given Occurrence, this occurrence could be from a phrase or from a word.
      *
      * @param occurrence Occurrence to create the Result object.
+     * @param isPhraseOccurrence Represents if the given occurrence is from a phrase.
+     * @param phraseEndPosition Position where the phrase ends.
      * @return The created Result object.
      */
-    private Result createResultFromOccurrence(Occurrence occurrence) {
+    private Result createResultFromOccurrence(Occurrence occurrence, boolean isPhraseOccurrence, int phraseEndPosition) {
         Document occurrenceDocument = occurrence.getDocument();
         String documentContent = occurrenceDocument.getContent();
-        int occurrencePosition = occurrence.getPosition();
+        int occurrenceStartPosition = occurrence.getPosition();
 
-        return new Result(occurrenceDocument, documentContent, occurrencePosition);
+        if (isPhraseOccurrence) {
+            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, phraseEndPosition});
+
+        } else {
+            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, occurrenceStartPosition});
+        }
     }
 
     /**
