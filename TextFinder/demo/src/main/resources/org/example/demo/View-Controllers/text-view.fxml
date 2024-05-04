@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.AnchorPane?>
-
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.TextAreaController">
-      <TextArea fx:id="textArea" styleClass="text-area" />
+      <TextFlow fx:id="textFlow" layoutX="20" layoutY="20" styleClass="text-area" />
 </VBox>
