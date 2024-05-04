@@ -33,6 +33,12 @@ public class TextAreaController implements Initializable {
         );
     }
 
+    public void setContent(String content) {
+        textFlow.getChildren().clear();
+
+        textFlow.getChildren().add(new Text(content));
+    }
+
     /**
      * Creates a Text node with the specified text and applies a highlighting style to it.
      *
