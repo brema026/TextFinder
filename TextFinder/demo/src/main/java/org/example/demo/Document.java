@@ -4,9 +4,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Represents a document with its associated metadata and content.
- */
 public class Document {
     private final String path;
     private final DocumentType type;
@@ -15,20 +12,7 @@ public class Document {
     private final Long size;
     private final String content;
 
-
     public Document(String path, DocumentType type, String fileName,
-
-    /**
-     * Document object constructor.
-     *
-     * @param path    The path to the document.
-     * @param type    The type of the document.
-     * @param date    The last modified date of the document in milliseconds since the epoch.
-     * @param size    The size of the document in bytes.
-     * @param content The content of the document.
-     */
-    public Document(String path, DocumentType type,
-
                     Long date, Long size, String content) {
         this.path = path;
         this.type = type;
