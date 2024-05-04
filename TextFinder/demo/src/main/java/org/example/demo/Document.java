@@ -3,15 +3,13 @@ package org.example.demo;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Represents a document with its associated metadata and content.
- */
 public class Document {
     private final String path;
     private final DocumentType type;
     private final Long date;
     private final Long size;
     private final String content;
+
 
     /**
      * Document object constructor.

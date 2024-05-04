@@ -20,11 +20,6 @@ class AVLNode {
 public class AVLTree {
     private AVLNode root;
 
-    // Checks if the tree is empty
-    public boolean isEmpty() {
-        return root == null;
-    }
-
     // Get height of node
     private int height(AVLNode node) {
         return node == null ? 0 : node.height;

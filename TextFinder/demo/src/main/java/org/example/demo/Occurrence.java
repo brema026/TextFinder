@@ -1,10 +1,19 @@
 package org.example.demo;
 
-/**
- * Represents a word occurrence on a certain document.
- *
- * @param document Document where the word appears.
- * @param position Position where the word was found.
- */
-public record Occurrence(Document document, int position) {
+public class Occurrence {
+    private final Document document;
+    private final int position;
+
+    public Occurrence(Document document, int position) {
+        this.document = document;
+        this.position = position;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public int getPosition() {
+        return position;
+    }
 }

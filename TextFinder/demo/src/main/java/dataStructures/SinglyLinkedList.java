@@ -139,4 +139,58 @@ public class SinglyLinkedList<T> {
             throw new IndexOutOfBoundsException();
         }
     }
+
+
+    /**
+     * Adds to the end all contained elements from a given SinglyLinkedList
+     * @param list List to add to the actual list.
+     */
+    public void addAll(SinglyLinkedList<T> list) {
+        int listSize = list.getSize();
+        if (listSize > 0) {
+            int currentIndex = 0;
+            while (currentIndex < listSize) {
+                T newElement = list.get(currentIndex);
+                add(newElement);
+                currentIndex++;
+            }
+        }
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private Node<T> current = head;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                T value = current.value;
+                current = current.next;
+                return value;
+            }
+        };
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("[");
+        Node<T> current = head;
+        while (current != null) {
+            result.append(current.value);
+            if (current.next != null) {
+                result.append(", ");
+            }
+            current = current.next;
+        }
+        result.append("]");
+        return result.toString();
+    }
+
+
 }
