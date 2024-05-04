@@ -3,9 +3,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.ResultController">
-   <children>
-      <ListView fx:id="resultList" styleClass="result-area" />
-   </children>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.demo.ResultController">
+   <ListView styleClass="result-area"/>
 </VBox>
