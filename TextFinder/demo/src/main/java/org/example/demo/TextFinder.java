@@ -4,6 +4,7 @@ import dataStructures.AVLTree;
 import dataStructures.SinglyLinkedList;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  * Utility class for finding text in an AVL tree.
@@ -15,8 +16,14 @@ public class TextFinder {
      * @param text Text to search in the tree.
      * @param avlTree AVL Tree where to search the given text.
      * @return Result array that contains the founded text's data.
+     * @throws NoSuchElementException If the AVLTree is empty.
      */
     public Result[] findText(String text, AVLTree avlTree) {
+        if (avlTree.isEmpty()) {
+            throw new NoSuchElementException("No hay documentos cargados en el programa." +
+                    " No se puede buscar ninguna palabra en un conjunto vacío de documentos");
+        }
+
         if (isPhrase(text)) {
             return findPhrase(text, avlTree);
 

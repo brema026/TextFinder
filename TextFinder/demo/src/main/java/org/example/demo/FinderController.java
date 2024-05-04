@@ -1,5 +1,6 @@
 package org.example.demo;
 
+import dataStructures.AVLTree;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -8,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -57,19 +59,20 @@ public class FinderController implements Initializable {
     /**
      * Creates a TextFinder object to search the user input on the TextField.
      *
-     * @throws Exception If the user input on the TextField is empty
+     * @throws IllegalArgumentException If the text to search is empty.
+     * @throws NoSuchElementException   If the AVLTree is empty.
      */
-    private void searchText() throws Exception {
+    private void searchText() throws IllegalArgumentException, NoSuchElementException {
         String text = finderText.getText();
 
         if (!text.isEmpty()) {
             TextFinder textFinder = new TextFinder();
-//            Result[] results = textFinder.findText(text, avlTree);
-//            System.out.println(results[0].fragment); // Temp
+            Result[] results = textFinder.findText(text, new AVLTree());
+            System.out.println(results[0].fragment); // Temp
             System.out.println(text);
 
         } else {
-            throw new Exception("No text where entered.");
+            throw new IllegalArgumentException("No se puede buscar una palabra o frase vacía.");
         }
     }
 
