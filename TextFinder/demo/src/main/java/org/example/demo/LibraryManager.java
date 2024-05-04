@@ -1,3 +1,5 @@
+package org.example.demo;
+
 import dataStructures.SinglyLinkedList;
 
 import java.io.File;
