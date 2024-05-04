@@ -27,7 +27,7 @@
     -fx-font: 12px georgia;
     -fx-text-fill:white;
 }
-.root-buttom{
+.root-button{
     -fx-background-color: #0A1C1C;
     -fx-background-radius: 100%;
     -fx-border-color:transparent;
@@ -36,7 +36,7 @@
 .text-area{
     -fx-pref-height:600px;
     -fx-pref-width: 800px;
-    -fx-background-color: #0D0D0D;
+    -fx-background-color: "white";
 }
 .order-area{
     -fx-background-color:#0E2626;
@@ -59,4 +59,10 @@
     -fx-border-color: #0A1C1C;
     -fx-border-width: 6px;
     -fx-border-radius: 18px;
+}
+
+.highlightedText {
+    -fx-font-weight: bold;
+    -fx-underline: true;
+    -fx-fill: #B22222;
 }

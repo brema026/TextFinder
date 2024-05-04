@@ -6,15 +6,12 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-
 
 public class TextAreaController implements Initializable {
     @FXML
     public TextFlow textFlow;
-  
     public void initialize(URL location, ResourceBundle resources){
         setText("Esto es una ", "palabra", " destacada.");
     }
@@ -47,7 +44,6 @@ public class TextAreaController implements Initializable {
         highlightedText.getStyleClass().add("highlightedText");
 
         return highlightedText;
-
     }
 
 }
