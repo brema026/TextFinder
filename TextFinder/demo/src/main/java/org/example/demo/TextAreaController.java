@@ -2,7 +2,6 @@ package org.example.demo;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -10,6 +9,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 public class TextAreaController implements Initializable {
+
     @FXML
     public TextFlow textFlow;
     public void initialize(URL location, ResourceBundle resources){
@@ -33,6 +33,12 @@ public class TextAreaController implements Initializable {
         );
     }
 
+    public void setContent(String content) {
+        textFlow.getChildren().clear();
+
+        textFlow.getChildren().add(new Text(content));
+    }
+
     /**
      * Creates a Text node with the specified text and applies a highlighting style to it.
      *
@@ -45,5 +51,4 @@ public class TextAreaController implements Initializable {
 
         return highlightedText;
     }
-
 }
