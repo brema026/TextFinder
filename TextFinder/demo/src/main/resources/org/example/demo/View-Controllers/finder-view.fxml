@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -16,4 +17,5 @@
       <ListView fx:id="libraryListView" prefHeight="200.0" prefWidth="200.0" />
         <Button fx:id="deleteFileButton" styleClass="root-button" />
     </children>
+
 </HBox>

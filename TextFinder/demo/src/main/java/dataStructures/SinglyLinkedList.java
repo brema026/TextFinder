@@ -1,6 +1,5 @@
 package dataStructures;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -16,7 +15,7 @@ class Node<T> {
     }
 }
 
-public class SinglyLinkedList<T> implements Iterable<T> {
+public class SinglyLinkedList<T> {
     private Node<T> head;
     private int size;
 
@@ -141,6 +140,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         }
     }
 
+
     /**
      * Adds to the end all contained elements from a given SinglyLinkedList
      * @param list List to add to the actual list.
@@ -191,5 +191,6 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         result.append("]");
         return result.toString();
     }
+
 
 }

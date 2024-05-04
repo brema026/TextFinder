@@ -8,17 +8,9 @@ import java.util.Scanner;
 
 public class LibraryManager {
     private final SinglyLinkedList<Document> documents;
-    private static LibraryManager instance;
 
     public LibraryManager() {
         documents = new SinglyLinkedList<>();
-    }
-
-    public static LibraryManager getInstance() {
-        if (instance == null) {
-            instance = new LibraryManager();
-        }
-        return instance;
     }
 
     /**
@@ -29,7 +21,6 @@ public class LibraryManager {
      */
     public void addFile(File file) throws Exception {
         String filePath = file.getPath();
-        String fileName = file.getName();
 
         // Checks file extension
         String fileExtension = getFileExtension(filePath);
@@ -44,7 +35,7 @@ public class LibraryManager {
         String fileContent = readFile(file);
 
         // Creates the document object
-        Document document = new Document(filePath, documentType, fileName,
+        Document document = new Document(filePath, documentType,
                 file.lastModified(), file.length(), fileContent);
 
         // Add the object to the list

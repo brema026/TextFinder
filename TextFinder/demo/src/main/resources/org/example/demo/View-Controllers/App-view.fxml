@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="1300" prefWidth="800.0" styleClass="root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.AppController">
-    <HBox fx:id="sectionBox" />
-    <HBox>
-        <VBox fx:id="sectionSecondaryBox" styleClass="root" />
-        <VBox fx:id="sectionOrderBox" styleClass="root" />
+    <HBox fx:id="sectionBox"/>
+    <HBox >
+        <VBox fx:id="sectionSecondaryBox" styleClass="root"/>
+        <VBox fx:id="sectionOrderBox" styleClass="root"/>
     </HBox>
 </VBox>
