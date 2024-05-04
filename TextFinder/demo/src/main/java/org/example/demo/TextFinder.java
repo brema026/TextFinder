@@ -5,6 +5,9 @@ import dataStructures.SinglyLinkedList;
 
 import java.util.Arrays;
 
+/**
+ * Utility class for finding text in an AVL tree.
+ */
 public class TextFinder {
     /**
      * Search for a given text in the AVL Tree.
@@ -78,45 +81,22 @@ public class TextFinder {
      * @return Result array that contains the founded word's data.
      */
     private Result[] findPhrase(String phrase, AVLTree avlTree) {
-        //  Separate phrase words
-        String[] phraseWords = phrase.split("\\P{L}+");
+        //  Split phrase in words
+        String[] phraseWords = splitPhrase(phrase);
 
-        //  Search the first phrase word on the AVLTree
+        //  Get the first word's occurrences
         String firstWord = phraseWords[0];
         TextData foundedWordData = avlTree.search(firstWord);
 
         if (foundedWordData != null) {
             // Remove the first word from the phrase words list
-            phraseWords = Arrays.copyOfRange(phraseWords, 1, phraseWords.length);
+            phraseWords = removeFirstWord(phraseWords);
 
             //  Get occurrences from the founded word data
             SinglyLinkedList<Occurrence> occurrences = foundedWordData.getOccurrences();
 
-            //  Create an empty SinglyLinkedList to store the results
-            SinglyLinkedList<Result> results = new SinglyLinkedList<>();
-
-            int occurrencesSize = occurrences.getSize();
-            int currentOccurrenceIndex = 0;
-            while (currentOccurrenceIndex < occurrencesSize) {
-                Occurrence currentOccurrence = occurrences.get(currentOccurrenceIndex);
-
-                // Get the phrase occurrence words
-                int phraseSize = phraseWords.length;
-                String[] phraseOccurrenceWords = getPhraseOccurrenceWords(currentOccurrence, phraseSize);
-
-                // Compare both phrase's words
-                boolean samePhrases = comparePhrases(phraseWords, phraseOccurrenceWords);
-                if (samePhrases) {
-                    //  Create a Result object from the current occurrence
-                    int phraseEndPosition = currentOccurrence.getPosition() + phraseSize;
-                    Result result = createResultFromOccurrence(currentOccurrence, true, phraseEndPosition);
-
-                    // Add the result object to the list
-                    results.add(result);
-                }
-                currentOccurrenceIndex++;
-
-            }
+            // Find matching occurrences with the phrase
+            SinglyLinkedList<Result> results = findMatchingOccurrences(phraseWords, occurrences);
 
             // Transform the SinglyLinkedList to an array and return it
             return singlyLinkedListToArray(results);
@@ -127,24 +107,58 @@ public class TextFinder {
     }
 
     /**
-     * Creates a Result object from a given Occurrence, this occurrence could be from a phrase or from a word.
+     * Splits the given phrase into an array of words.
      *
-     * @param occurrence Occurrence to create the Result object.
-     * @param isPhraseOccurrence Represents if the given occurrence is from a phrase.
-     * @param phraseEndPosition Position where the phrase ends.
-     * @return The created Result object.
+     * @param phrase The phrase to split.
+     * @return An array of words obtained by splitting the phrase.
      */
-    private Result createResultFromOccurrence(Occurrence occurrence, boolean isPhraseOccurrence, int phraseEndPosition) {
-        Document occurrenceDocument = occurrence.getDocument();
-        String documentContent = occurrenceDocument.getContent();
-        int occurrenceStartPosition = occurrence.getPosition();
+    private String[] splitPhrase(String phrase) {
+        return phrase.split("\\P{L}+");
+    }
 
-        if (isPhraseOccurrence) {
-            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, phraseEndPosition});
+    /**
+     * Removes the first word from the given array of words.
+     *
+     * @param phraseWords The array of words from which to remove the first word.
+     * @return A new array containing the remaining words after removing the first word.
+     */
+    private String[] removeFirstWord(String[] phraseWords) {
+        return Arrays.copyOfRange(phraseWords, 1, phraseWords.length);
+    }
 
-        } else {
-            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, occurrenceStartPosition});
+    /**
+     * Finds occurrences in a list matching the specified phrase words.
+     *
+     * @param phraseWords   The words of the phrase to match.
+     * @param occurrences   The list of occurrences to search.
+     * @return A SinglyLinkedList containing the matching results.
+     */
+    private SinglyLinkedList<Result> findMatchingOccurrences(String[] phraseWords, SinglyLinkedList<Occurrence> occurrences) {
+        SinglyLinkedList<Result> results = new SinglyLinkedList<>();
+
+        int occurrencesSize = occurrences.getSize();
+        int currentOccurrenceIndex = 0;
+        while (currentOccurrenceIndex < occurrencesSize) {
+            Occurrence currentOccurrence = occurrences.get(currentOccurrenceIndex);
+
+            // Get the occurrence words
+            int phraseSize = phraseWords.length;
+            String[] occurrenceWords = getOccurrenceWords(currentOccurrence, phraseSize);
+
+            // Compare both phrase's words
+            if (areSamePhrases(phraseWords, occurrenceWords)) {
+                //  Create a Result object from the current occurrence
+                int phraseEndPosition = currentOccurrence.position() + phraseSize;
+                Result result = createResultFromOccurrence(currentOccurrence, true, phraseEndPosition);
+
+                // Add the result object to the list
+                results.add(result);
+            }
+            currentOccurrenceIndex++;
+
         }
+
+        return results;
     }
 
     /**
@@ -154,9 +168,9 @@ public class TextFinder {
      * @param phraseSize Amount of words in the phrase.
      * @return A String array with the phrase words.
      */
-    private String[] getPhraseOccurrenceWords(Occurrence occurrence, int phraseSize) {
-        String occurrenceDocumentContent = occurrence.getDocument().getContent();
-        int occurrencePosition = occurrence.getPosition();
+    private String[] getOccurrenceWords(Occurrence occurrence, int phraseSize) {
+        String occurrenceDocumentContent = occurrence.document().getContent();
+        int occurrencePosition = occurrence.position();
         String[] occurrenceDocumentWords = occurrenceDocumentContent.split("\\P{L}+");
 
         int phraseStartIndex = occurrencePosition + 1;
@@ -168,23 +182,32 @@ public class TextFinder {
      * Compare if two phrases are the same.
      *
      * @param phraseWords Original phrase to compare.
-     * @param phraseOccurrenceWords The phrase occurrence to check.
+     * @param occurrenceWords The phrase occurrence to check.
      * @return Boolean values that represents if both phrases are the same.
      */
-    private boolean comparePhrases(String[] phraseWords, String[] phraseOccurrenceWords) {
-        int currentIndex = 0;
-        int phrasesSize = phraseWords.length;
+    private boolean areSamePhrases(String[] phraseWords, String[] occurrenceWords) {
+        return Arrays.equals(phraseWords, occurrenceWords);
+    }
 
-        while (currentIndex < phrasesSize) {
-            String phraseWord = phraseWords[currentIndex];
-            String phraseOccurrenceWord = phraseOccurrenceWords[currentIndex];
-            if (!phraseWord.equals(phraseOccurrenceWord)) {
-                return false;
-            }
+    /**
+     * Creates a Result object from a given Occurrence, this occurrence could be from a phrase or from a word.
+     *
+     * @param occurrence Occurrence to create the Result object.
+     * @param isPhraseOccurrence Represents if the given occurrence is from a phrase.
+     * @param phraseEndPosition Position where the phrase ends.
+     * @return The created Result object.
+     */
+    private Result createResultFromOccurrence(Occurrence occurrence, boolean isPhraseOccurrence, int phraseEndPosition) {
+        Document occurrenceDocument = occurrence.document();
+        String documentContent = occurrenceDocument.getContent();
+        int occurrenceStartPosition = occurrence.position();
 
-            currentIndex++;
+        if (isPhraseOccurrence) {
+            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, phraseEndPosition});
+
+        } else {
+            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, occurrenceStartPosition});
         }
-        return true;
     }
 
     /**
