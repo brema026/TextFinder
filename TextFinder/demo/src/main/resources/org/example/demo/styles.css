@@ -1,25 +1,31 @@
 .root{
     -fx-background-color: #0D0D0D; /* Green */
     -fx-font-size: 14px;
-    -fx-padding: 20px 20px;
-    -fx-spacing: 20px;
+    -fx-padding: 18px 18px;
+    -fx-spacing: 10px;
 }
 
 .root-first-block{
     -fx-background-color:#0E2626;
     -fx-background-radius:19px;
     -fx-pref-width:1300px;
-    -fx-pref-height:100px;
-    -fx-padding: 25px 30px;
-    -fx-spacing: 25px;
+    -fx-pref-height:140px;
+    -fx-padding: 5px 0px;
+    -fx-spacing: 18px;
     -fx-border-color: #0A1C1C;
     -fx-border-width: 6px;
     -fx-border-radius: 18px;
     -fx-alignment: center;
 }
 .root-text{
-    -fx-font: 22px impact;
+    -fx-font: 21px impact;
     -fx-text-fill: white;
+}
+.listView-library{
+    -fx-background-color: #0A1C1C;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-control-inner-background: #0A1C1C;
 }
 .find-text{
     -fx-background-color: #0D0D0D;
