@@ -1,9 +1,7 @@
 package org.example.demo;
 
-
 import dataStructures.AVLTree;
 import dataStructures.SinglyLinkedList;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -14,10 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 
@@ -63,7 +60,7 @@ public class FinderController implements Initializable {
         openFileView.setFitWidth(25);
         fileButton.setGraphic(openFileView);
 
-        ImageView addFileView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/add.png"))));
+        ImageView addFileView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/lib.png"))));
         addFileView.setFitHeight(25);
         addFileView.setFitWidth(25);
         addFileButton.setGraphic(addFileView);
@@ -73,6 +70,13 @@ public class FinderController implements Initializable {
         deleteFileView.setFitHeight(25);
         deleteFileButton.setGraphic(deleteFileView);
 
+        deleteFileButton.setOnAction(e -> deleteSelectedFile());
+
+        libraryListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                updateTextArea(newValue);
+            }
+        });
     }
 
     /**
@@ -99,33 +103,52 @@ public class FinderController implements Initializable {
         this.textAreaController = textAreaController;
     }
 
+    private void deleteSelectedFile() {
+        int selectedIndex = libraryListView.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            libraryManager.deleteDocument(selectedIndex);
+            refreshListView();
+        }
+    }
+
     @FXML
     public void handleFileButton() {
         Stage stage = (Stage) fileButton.getScene().getWindow();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File");
-        File selectedFile = fileChooser.showOpenDialog(stage);
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(stage);
 
-        if (selectedFile != null) {
+        if (selectedFiles != null) {
             try {
-                libraryManager.addFile(selectedFile);
-                System.out.println("Document List after adding file: " + libraryManager.getDocuments());
-                refreshListView();
-
-                // Parsear el contenido del archivo
-                String content = DocumentParser.parseDocument(selectedFile);
-
-                // Mostrar el contenido en el TextArea
-                if (textAreaController != null) {
-                    textAreaController.setContent(content);
-                } else {
-                    System.err.println("TextAreaController no ha sido inicializado.");
+                for (File selectedFile : selectedFiles) {
+                    if (selectedFile.getName().toLowerCase().endsWith(".zip")) {
+                        libraryManager.addFilesFromZip(selectedFile);
+                    } else {
+                        uploadFile(selectedFile);
+                    }
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void uploadFile(File file) {
+        try {
+            libraryManager.addFile(file);
+            System.out.println("Document List after adding file: " + libraryManager.getDocuments());
+            refreshListView();
+
+            String content = DocumentParser.parseDocument(file);
+
+            if (textAreaController != null) {
+                textAreaController.setContent(content);
+            } else {
+                System.err.println("TextAreaController no ha sido inicializado.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -145,4 +168,22 @@ public class FinderController implements Initializable {
         libraryListView.setItems(items);
         libraryListView.refresh();
     }
+
+    private void updateTextArea(String selectedFileName) {
+        SinglyLinkedList<Document> documents = libraryManager.getDocuments();
+
+        for (Document document : documents) {
+            if (document.getFileName().equals(selectedFileName)) {
+                String content = document.getContent();
+                if (textAreaController != null) {
+                    textAreaController.setContent(content);
+                } else {
+                    System.err.println("TextAreaController no ha sido inicializado.");
+                }
+                break;
+            }
+        }
+    }
 }
+
+
