@@ -31,7 +31,7 @@ public class DocumentParser {
         }
     }
 
-    private static String parseTextFile(File file, AVLTree index) throws IOException {
+    private static String parseTextFile(File file, AVLTree tree) throws IOException {
         StringBuilder content = new StringBuilder();
         try (java.util.Scanner scanner = new java.util.Scanner(file)) {
             int position = 0;
@@ -48,7 +48,7 @@ public class DocumentParser {
                     DocumentType type = DocumentType.TXT;
 
                     // Creamos el objeto Document con los parámetros obtenidos
-                    index.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
+                    tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
                 }
             }
         }
@@ -56,7 +56,7 @@ public class DocumentParser {
     }
 
 
-    private static String parsePdfFile(File file, AVLTree index) throws IOException {
+    private static String parsePdfFile(File file, AVLTree tree) throws IOException {
         try (PDDocument document = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
             String content = stripper.getText(document);
@@ -68,14 +68,17 @@ public class DocumentParser {
             // Supongamos que el tipo de documento es PDF
             DocumentType type = DocumentType.PDF;
 
-            // Insertar el contenido del PDF en el árbol AVL
-            index.insert(content.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, content), -1);
+            String[] words = content.split("\\s+"); // Dividir el contenido en palabras
+            int position = 0;
+            for (String word : words) {
+                tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
+            }
 
             return content;
         }
     }
 
-    private static String parseDocxFile(File file, AVLTree index) throws IOException {
+    private static String parseDocxFile(File file, AVLTree tree) throws IOException {
         try (FileInputStream fis = new FileInputStream(file);
              XWPFDocument document = new XWPFDocument(fis);
              XWPFWordExtractor extractor = new XWPFWordExtractor(document)) {
@@ -88,8 +91,11 @@ public class DocumentParser {
             // Supongamos que el tipo de documento es DOCX
             DocumentType type = DocumentType.DOCX;
 
-            // Insertar el contenido del DOCX en el árbol AVL
-            index.insert(content.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, content), -1);
+            String[] words = content.split("\\s+"); // Dividir el contenido en palabras
+            int position = 0;
+            for (String word : words) {
+                tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
+            }
 
             return content;
         }
