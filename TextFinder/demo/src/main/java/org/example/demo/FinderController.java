@@ -140,7 +140,8 @@ public class FinderController implements Initializable {
             System.out.println("Document List after adding file: " + libraryManager.getDocuments());
             refreshListView();
 
-            String content = DocumentParser.parseDocument(file);
+            AVLTree tree = new AVLTree(); // Suponiendo que AVLTree almacena Strings internamente
+            String content = DocumentParser.parseDocument(file, tree);
 
             if (textAreaController != null) {
                 textAreaController.setContent(content);
@@ -151,6 +152,7 @@ public class FinderController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
     private void refreshListView() {
         ObservableList<String> items = FXCollections.observableArrayList();
