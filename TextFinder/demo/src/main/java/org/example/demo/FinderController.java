@@ -11,12 +11,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class FinderController implements Initializable {
 
@@ -34,9 +37,11 @@ public class FinderController implements Initializable {
     private ListView<String> libraryListView;
     private LibraryManager libraryManager;
     private TextAreaController textAreaController;
+    private File storageFolder;
 
     public FinderController() {
         libraryManager = LibraryManager.getInstance();
+        storageFolder = new File("documents");
     }
 
     @Override
@@ -77,6 +82,18 @@ public class FinderController implements Initializable {
                 updateTextArea(newValue);
             }
         });
+
+        File[] files = storageFolder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    String fileName = file.getName();
+                    if (!isDocumentLoaded(fileName)) {
+                        libraryListView.getItems().add(fileName);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -105,14 +122,26 @@ public class FinderController implements Initializable {
 
     private void deleteSelectedFile() {
         int selectedIndex = libraryListView.getSelectionModel().getSelectedIndex();
+        System.out.println("Selected Index: " + selectedIndex);
+
         if (selectedIndex >= 0) {
-            libraryManager.deleteDocument(selectedIndex);
-            refreshListView();
+            try {
+                Document document = libraryManager.getDocumentAtIndex(selectedIndex);
+                System.out.println("Deleting document: " + document.getFileName());
+                libraryManager.deleteDocument(selectedIndex);
+                File fileToDelete = new File(storageFolder, document.getFileName());
+                System.out.println("Deleting file: " + fileToDelete.getName());
+                fileToDelete.delete();
+                refreshListView();
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+
     @FXML
-    public void handleFileButton() {
+    private void handleFileButton() {
         Stage stage = (Stage) fileButton.getScene().getWindow();
 
         FileChooser fileChooser = new FileChooser();
@@ -122,11 +151,7 @@ public class FinderController implements Initializable {
         if (selectedFiles != null) {
             try {
                 for (File selectedFile : selectedFiles) {
-                    if (selectedFile.getName().toLowerCase().endsWith(".zip")) {
-                        libraryManager.addFilesFromZip(selectedFile);
-                    } else {
-                        uploadFile(selectedFile);
-                    }
+                    uploadFile(selectedFile);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -134,9 +159,12 @@ public class FinderController implements Initializable {
         }
     }
 
+
     private void uploadFile(File file) {
         try {
             libraryManager.addFile(file);
+            File destFile = new File(storageFolder, file.getName());
+            Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Document List after adding file: " + libraryManager.getDocuments());
             refreshListView();
 
@@ -170,19 +198,22 @@ public class FinderController implements Initializable {
     }
 
     private void updateTextArea(String selectedFileName) {
-        SinglyLinkedList<Document> documents = libraryManager.getDocuments();
-
-        for (Document document : documents) {
-            if (document.getFileName().equals(selectedFileName)) {
-                String content = document.getContent();
-                if (textAreaController != null) {
-                    textAreaController.setContent(content);
-                } else {
-                    System.err.println("TextAreaController no ha sido inicializado.");
-                }
-                break;
+        File file = new File(storageFolder, selectedFileName);
+        try {
+            String content = new String(Files.readAllBytes(file.toPath()));
+            if (textAreaController != null) {
+                textAreaController.setContent(content);
+            } else {
+                System.err.println("TextAreaController no ha sido inicializado.");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private boolean isDocumentLoaded(String fileName) {
+        ObservableList<String> items = libraryListView.getItems();
+        return items.contains(fileName);
     }
 }
 

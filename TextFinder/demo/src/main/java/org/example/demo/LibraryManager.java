@@ -5,6 +5,7 @@ import dataStructures.SinglyLinkedList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.zip.ZipFile;
 
@@ -14,6 +15,8 @@ public class LibraryManager {
 
     public LibraryManager() {
         documents = new SinglyLinkedList<>();
+        String folderPath = "documents";
+        loadDocumentsFromFolder(folderPath);
     }
 
     public static LibraryManager getInstance() {
@@ -32,8 +35,6 @@ public class LibraryManager {
     public void addFile(File file) throws Exception {
         if (file.isDirectory()) {
             throw new Exception("Invalid file type: Directory.");
-        } else if (file.getName().toLowerCase().endsWith(".zip")) {
-            addFilesFromZip(file);
         } else {
             String filePath = file.getPath();
             String fileName = file.getName();
@@ -95,40 +96,33 @@ public class LibraryManager {
         return content.toString().strip();
     }
 
-    public void addFilesFromZip(File zipFile) {
-        try (ZipFile zf = new ZipFile(zipFile)) {
-            zf.stream()
-                    .filter(entry -> !entry.isDirectory())
-                    .forEach(entry -> {
-                        String name = entry.getName().toLowerCase();
-                        if (name.endsWith(".txt") || name.endsWith(".pdf") || name.endsWith(".docx")) {
-                            try {
-                                File tempFile = File.createTempFile("temp", ".tmp");
-                                tempFile.deleteOnExit();
-                                zf.getInputStream(entry).transferTo(java.nio.file.Files.newOutputStream(tempFile.toPath()));
-                                addFile(tempFile);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void deleteDocument(int index) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= documents.getSize()) {
+        try {
+            documents.remove(getDocumentAtIndex(index));
+        } catch (NoSuchElementException e) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        documents.remove(getDocumentAtIndex(index));
     }
 
-    private Document getDocumentAtIndex(int index) throws IndexOutOfBoundsException {
-        if (index < 0 || index >= documents.getSize()) {
+    public Document getDocumentAtIndex(int index) throws IndexOutOfBoundsException {
+        try {
+            return documents.get(index);
+        } catch (NoSuchElementException e) {
             throw new IndexOutOfBoundsException("Index out of bounds");
         }
-        return documents.get(index);
+    }
+
+    private void loadDocumentsFromFolder(String folderPath) {
+        File folder = new File(folderPath);
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    Document document = new Document(file.getPath(), null, file.getName(), null, null, null);
+                    documents.add(document);
+                }
+            }
+        }
     }
 
     /**
