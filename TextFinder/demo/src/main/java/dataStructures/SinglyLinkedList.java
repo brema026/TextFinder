@@ -61,7 +61,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         if (!isEmpty()) {
             Node<T> current = head;
             while (current.next != null) {
-                if (head.value == element) {
+                if (current.value == element) {
                     return true;
                 }
                 current = current.next;
@@ -126,19 +126,18 @@ public class SinglyLinkedList<T> implements Iterable<T> {
      * @throws IndexOutOfBoundsException If the given index it's out of the list range.
      */
     public T get(int index) {
-        if (!isEmpty() || index >= size) {
-            Node<T> current = head;
-            int currentIndex = 0;
-
-            while (currentIndex < index) {
-                current = current.next;
-                currentIndex++;
-            }
-            return current.value;
-
-        } else {
-            throw new IndexOutOfBoundsException();
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
         }
+
+        Node<T> current = head;
+        int currentIndex = 0;
+
+        while (currentIndex < index) {
+            current = current.next;
+            currentIndex++;
+        }
+        return current.value;
     }
 
     /**
