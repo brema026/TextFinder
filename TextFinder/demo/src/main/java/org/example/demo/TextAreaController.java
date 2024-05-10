@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.scene.Node;
 import javafx.scene.text.Text;
@@ -53,25 +55,31 @@ public class TextAreaController implements Initializable {
     public void highlightWord(String content, String word) {
         textFlow.getChildren().clear();
 
-        // Busca la palabra sin importar mayúsculas o minúsculas
-        int index = content.toLowerCase().indexOf(word.toLowerCase());
-        if (index != -1) {
-            // Obtiene la palabra original
-            String originalWord = content.substring(index, index + word.length());
+        // Patrón para buscar la palabra (ignorando mayúsculas y minúsculas)
+        Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(content);
 
-            String beforeText = content.substring(0, index);
-            String highlightedText = originalWord;
-            String afterText = content.substring(index + word.length());
+        int lastMatchEnd = 0;
+        while (matcher.find()) {
+            // Agrega el texto entre las coincidencias anteriores y la actual
+            if (matcher.start() > lastMatchEnd) {
+                String beforeText = content.substring(lastMatchEnd, matcher.start());
+                textFlow.getChildren().add(new Text(beforeText));
+            }
 
-            setText(beforeText, highlightedText, afterText);
-        } else {
-            // La palabra no se encontró en el contenido
-            setContent(content);
+            // Agrega la palabra resaltada
+            String highlightedText = content.substring(matcher.start(), matcher.end());
+            textFlow.getChildren().add(createHighlightedText(highlightedText));
+
+            lastMatchEnd = matcher.end();
+        }
+
+        // Agrega el texto después de la última coincidencia
+        if (lastMatchEnd < content.length()) {
+            String afterText = content.substring(lastMatchEnd);
+            textFlow.getChildren().add(new Text(afterText));
         }
     }
-
-
-
 
 
     /**
