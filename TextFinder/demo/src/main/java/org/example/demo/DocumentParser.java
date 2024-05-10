@@ -20,6 +20,10 @@ public class DocumentParser {
         this.tree = new AVLTree();
     }
 
+    public AVLTree getAVLTree() {
+        return this.tree;
+    }
+
     public String parseDocument(File file) throws IOException {
         String fileName = file.getName();
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
@@ -54,7 +58,7 @@ public class DocumentParser {
 
                     // Creamos el objeto Document con los parámetros obtenidos
                     tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
-                    System.out.println("TxT: "+ word);
+                    System.out.println("Se agregó la palabra '" + word.toLowerCase() + "' al árbol AVL.");
                 }
             }
         }
@@ -77,7 +81,7 @@ public class DocumentParser {
             int position = 0;
             for (String word : words) {
                 tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
-                System.out.println("Se AgregoPDF: " + word);
+                System.out.println("Se agregó la palabra '" + word.toLowerCase() + "' al árbol AVL.");
             }
 
             return content;
@@ -101,7 +105,7 @@ public class DocumentParser {
             int position = 0;
             for (String word : words) {
                 tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
-                System.out.println("Se AgregoDocx: " + word);
+                System.out.println("Se agregó la palabra '" + word.toLowerCase() + "' al árbol AVL.");
             }
 
             return content;

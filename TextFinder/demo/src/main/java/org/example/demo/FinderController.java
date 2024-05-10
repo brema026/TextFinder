@@ -38,9 +38,11 @@ public class FinderController implements Initializable {
     private LibraryManager libraryManager;
     private TextAreaController textAreaController;
     private File storageFolder;
+    private DocumentParser documentParser;
 
     public FinderController() {
         libraryManager = LibraryManager.getInstance();
+        documentParser = new DocumentParser();
         storageFolder = new File("documents");
         if (!storageFolder.exists()) {
             boolean created = storageFolder.mkdirs();
@@ -48,6 +50,7 @@ public class FinderController implements Initializable {
                 System.err.println("No se pudo crear la carpeta 'documents'.");
             }
         }
+
     }
 
     @Override
@@ -109,18 +112,39 @@ public class FinderController implements Initializable {
      * @throws NoSuchElementException   If the AVLTree is empty.
      */
     private void searchText() throws IllegalArgumentException, NoSuchElementException {
-        String text = finderText.getText();
+        String text = finderText.getText().toLowerCase(); // Convertir la palabra buscada a minúsculas
 
         if (!text.isEmpty()) {
-            TextFinder textFinder = new TextFinder();
-            Result[] results = textFinder.findText(text, new AVLTree());
-            System.out.println(results[0].fragment); // Temp
-            System.out.println(text);
+            AVLTree avlTree = documentParser.getAVLTree();
 
+            if (avlTree == null) {
+                System.out.println("El árbol AVL es nulo.");
+                return;
+            }
+
+            TextFinder textFinder = new TextFinder();
+            Result[] results = textFinder.findText(text, avlTree);
+
+            if (results.length > 0) {
+                System.out.println("Resultados de la búsqueda:");
+                for (Result result : results) {
+                    System.out.println(result.getFragment());
+                }
+
+                // Resaltar la palabra en el TextAreaController
+                textAreaController.highlightWord(textAreaController.getContent(), text); // Convertir el contenido a minúsculas
+            } else {
+                System.out.println("No se encontraron resultados para la búsqueda.");
+            }
+
+            System.out.println("Texto buscado: " + text);
         } else {
             throw new IllegalArgumentException("No se puede buscar una palabra o frase vacía.");
         }
     }
+
+
+
 
     public void setTextAreaController(TextAreaController textAreaController) {
         this.textAreaController = textAreaController;
@@ -174,7 +198,6 @@ public class FinderController implements Initializable {
             System.out.println("Document List after adding file: " + libraryManager.getDocuments());
             refreshListView();
 
-            DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
             String content = documentParser.parseDocument(file); // Llamar al método parseDocument() de la instancia
 
             if (textAreaController != null) {

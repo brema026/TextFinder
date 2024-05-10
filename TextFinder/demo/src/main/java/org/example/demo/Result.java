@@ -7,6 +7,7 @@ public class Result {
     Document document; // Document where the text was founded
     String fragment; // Document text
     int[] position; // Position where the text is starts and ends on the document
+    private boolean isHighlighted;
 
     /**
      * Result object constructor.
@@ -15,10 +16,11 @@ public class Result {
      * @param fragment  The text fragment found in the document.
      * @param position  The position where the text starts and ends in the document.
      */
-    public Result(Document document, String fragment, int[] position) {
+    public Result(Document document, String fragment, int[] position, boolean isHighlighted) {
         this.document = document;
         this.fragment = fragment;
         this.position = position;
+        this.isHighlighted = isHighlighted;
     }
 
     public Document getDocument() {
@@ -27,5 +29,9 @@ public class Result {
 
     public String getFragment() {
         return fragment;
+    }
+
+    public boolean isHighlighted() {
+        return isHighlighted;
     }
 }

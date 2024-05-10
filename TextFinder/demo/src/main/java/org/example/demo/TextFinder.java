@@ -204,18 +204,42 @@ public class TextFinder {
      * @param phraseEndPosition Position where the phrase ends.
      * @return The created Result object.
      */
+    /**
+     * Creates a Result object from a given Occurrence, this occurrence could be from a phrase or from a word.
+     *
+     * @param occurrence         Occurrence to create the Result object.
+     * @param isPhraseOccurrence Represents if the given occurrence is from a phrase.
+     * @param phraseEndPosition  Position where the phrase ends.
+     * @return The created Result object.
+     */
     private Result createResultFromOccurrence(Occurrence occurrence, boolean isPhraseOccurrence, int phraseEndPosition) {
         Document occurrenceDocument = occurrence.document();
         String documentContent = occurrenceDocument.getContent();
         int occurrenceStartPosition = occurrence.position();
+        String fragment;
 
         if (isPhraseOccurrence) {
-            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, phraseEndPosition});
-
+            // Si es una ocurrencia de frase, extrae el fragmento de la frase
+            int phraseStartPosition = occurrenceStartPosition;
+            int phraseEndIndex = phraseEndPosition;
+            if (phraseEndIndex > documentContent.length()) {
+                phraseEndIndex = documentContent.length();
+            }
+            fragment = documentContent.substring(phraseStartPosition, phraseEndIndex);
         } else {
-            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, occurrenceStartPosition});
+            // Si es una ocurrencia de palabra, solo usa la palabra misma como fragmento
+            if (occurrenceStartPosition < documentContent.length()) {
+                fragment = documentContent.substring(occurrenceStartPosition, occurrenceStartPosition + 1);
+            } else {
+                fragment = "";
+            }
         }
+
+        return new Result(occurrenceDocument, fragment, new int[]{occurrenceStartPosition, phraseEndPosition}, true);
     }
+
+
+
 
     /**
      * Converts the linked list to an array.

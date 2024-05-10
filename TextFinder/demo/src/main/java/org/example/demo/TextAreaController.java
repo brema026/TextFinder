@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -33,11 +34,45 @@ public class TextAreaController implements Initializable {
         );
     }
 
+    public String getContent() {
+        StringBuilder contentBuilder = new StringBuilder();
+        for (Node node : textFlow.getChildren()) {
+            if (node instanceof Text) {
+                Text textNode = (Text) node;
+                contentBuilder.append(textNode.getText());
+            }
+        }
+        return contentBuilder.toString();
+    }
     public void setContent(String content) {
         textFlow.getChildren().clear();
 
         textFlow.getChildren().add(new Text(content));
     }
+
+    public void highlightWord(String content, String word) {
+        textFlow.getChildren().clear();
+
+        // Busca la palabra sin importar mayúsculas o minúsculas
+        int index = content.toLowerCase().indexOf(word.toLowerCase());
+        if (index != -1) {
+            // Obtiene la palabra original
+            String originalWord = content.substring(index, index + word.length());
+
+            String beforeText = content.substring(0, index);
+            String highlightedText = originalWord;
+            String afterText = content.substring(index + word.length());
+
+            setText(beforeText, highlightedText, afterText);
+        } else {
+            // La palabra no se encontró en el contenido
+            setContent(content);
+        }
+    }
+
+
+
+
 
     /**
      * Creates a Text node with the specified text and applies a highlighting style to it.
