@@ -42,6 +42,12 @@ public class FinderController implements Initializable {
     public FinderController() {
         libraryManager = LibraryManager.getInstance();
         storageFolder = new File("documents");
+        if (!storageFolder.exists()) {
+            boolean created = storageFolder.mkdirs();
+            if (!created) {
+                System.err.println("No se pudo crear la carpeta 'documents'."); 
+            }
+        }
     }
 
     @Override
