@@ -45,7 +45,7 @@ public class FinderController implements Initializable {
         if (!storageFolder.exists()) {
             boolean created = storageFolder.mkdirs();
             if (!created) {
-                System.err.println("No se pudo crear la carpeta 'documents'."); 
+                System.err.println("No se pudo crear la carpeta 'documents'.");
             }
         }
     }
@@ -174,8 +174,8 @@ public class FinderController implements Initializable {
             System.out.println("Document List after adding file: " + libraryManager.getDocuments());
             refreshListView();
 
-            AVLTree tree = new AVLTree(); // Suponiendo que AVLTree almacena Strings internamente
-            String content = DocumentParser.parseDocument(file, tree);
+            DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
+            String content = documentParser.parseDocument(file); // Llamar al método parseDocument() de la instancia
 
             if (textAreaController != null) {
                 textAreaController.setContent(content);

@@ -14,24 +14,29 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class DocumentParser {
+    private AVLTree tree;
 
-    public static String parseDocument(File file, AVLTree tree) throws IOException {
+    public DocumentParser() {
+        this.tree = new AVLTree();
+    }
+
+    public String parseDocument(File file) throws IOException {
         String fileName = file.getName();
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
 
         switch (fileExtension) {
             case "txt":
-                return parseTextFile(file, tree);
+                return parseTextFile(file);
             case "pdf":
-                return parsePdfFile(file, tree);
+                return parsePdfFile(file);
             case "docx":
-                return parseDocxFile(file, tree);
+                return parseDocxFile(file);
             default:
                 throw new IllegalArgumentException("Unsupported file type: " + fileExtension);
         }
     }
 
-    private static String parseTextFile(File file, AVLTree tree) throws IOException {
+    private String parseTextFile(File file) throws IOException {
         StringBuilder content = new StringBuilder();
         try (java.util.Scanner scanner = new java.util.Scanner(file)) {
             int position = 0;
@@ -49,14 +54,14 @@ public class DocumentParser {
 
                     // Creamos el objeto Document con los parámetros obtenidos
                     tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
+                    System.out.println("TxT: "+ word);
                 }
             }
         }
         return content.toString();
     }
 
-
-    private static String parsePdfFile(File file, AVLTree tree) throws IOException {
+    private String parsePdfFile(File file) throws IOException {
         try (PDDocument document = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
             String content = stripper.getText(document);
@@ -72,13 +77,14 @@ public class DocumentParser {
             int position = 0;
             for (String word : words) {
                 tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
+                System.out.println("Se AgregoPDF: " + word);
             }
 
             return content;
         }
     }
 
-    private static String parseDocxFile(File file, AVLTree tree) throws IOException {
+    private String parseDocxFile(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file);
              XWPFDocument document = new XWPFDocument(fis);
              XWPFWordExtractor extractor = new XWPFWordExtractor(document)) {
@@ -95,10 +101,45 @@ public class DocumentParser {
             int position = 0;
             for (String word : words) {
                 tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
+                System.out.println("Se AgregoDocx: " + word);
             }
 
             return content;
         }
     }
+
+    public void parseDocumentsInFolder(File folder) throws IOException {
+        if (!folder.isDirectory()) {
+            throw new IllegalArgumentException("El argumento no es una carpeta válida.");
+        }
+
+        File[] files = folder.listFiles();
+        if (files == null) {
+            throw new IOException("Error al listar archivos en la carpeta.");
+        }
+
+        for (File file : files) {
+            if (file.isFile()) {
+                String fileName = file.getName();
+                String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+
+                switch (fileExtension) {
+                    case "txt":
+                        parseTextFile(file);
+                        break;
+                    case "pdf":
+                        parsePdfFile(file);
+                        break;
+                    case "docx":
+                        parseDocxFile(file);
+                        break;
+                    default:
+                        // Ignorar archivos con extensiones no compatibles
+                        break;
+                }
+            }
+        }
+    }
+
 
 }
