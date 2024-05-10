@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,8 +37,14 @@ public class AppController implements Initializable {
         loadResultSection();
         // Configurar el controlador del área de texto en el controlador del buscador
         finderController.setTextAreaController(textAreaController);
-    }
 
+        DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
+        try {
+            documentParser.parseDocumentsInFolder(new File("documents")); // Llamar al método parseDocumentsInFolder() de la instancia
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void loadFinderSection() {
 
         try {
