@@ -253,7 +253,7 @@ public class FinderController implements Initializable {
     private void updateTextArea(String selectedFileName) {
         File file = new File(storageFolder, selectedFileName);
         try {
-            String content = new String(Files.readAllBytes(file.toPath()));
+            String content = documentParser.parseDocument(file);
             if (textAreaController != null) {
                 textAreaController.setContent(content);
             } else {
@@ -263,6 +263,7 @@ public class FinderController implements Initializable {
             e.printStackTrace();
         }
     }
+
 
     private boolean isDocumentLoaded(String fileName) {
         ObservableList<String> items = libraryListView.getItems();
