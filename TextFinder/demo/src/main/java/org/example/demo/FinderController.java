@@ -168,18 +168,6 @@ public class FinderController implements Initializable {
         }
     }
 
-    private List<String> extractWordsFromPhrase(String phrase) {
-        List<String> words = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(phrase);
-
-        while (tokenizer.hasMoreTokens()) {
-            words.add(tokenizer.nextToken());
-        }
-
-        return words;
-    }
-
-
     public void setTextAreaController(TextAreaController textAreaController) {
         this.textAreaController = textAreaController;
     }
