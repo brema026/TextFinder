@@ -3,6 +3,7 @@ package org.example.demo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,6 +81,24 @@ public class TextAreaController implements Initializable {
             textFlow.getChildren().add(new Text(afterText));
         }
     }
+
+    public void highlightPhrase(String content, int startIdx, int endIdx) {
+        textFlow.getChildren().clear();
+
+        // Agregar el texto antes de la frase resaltada
+        String beforeText = content.substring(0, startIdx);
+        textFlow.getChildren().add(new Text(beforeText));
+
+        // Agregar la frase resaltada
+        String highlightedText = content.substring(startIdx, endIdx);
+        textFlow.getChildren().add(createHighlightedText(highlightedText));
+
+        // Agregar el texto después de la frase resaltada
+        String afterText = content.substring(endIdx);
+        textFlow.getChildren().add(new Text(afterText));
+    }
+
+
 
 
     /**

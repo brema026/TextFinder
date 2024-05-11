@@ -20,6 +20,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FinderController implements Initializable {
 
@@ -112,9 +114,9 @@ public class FinderController implements Initializable {
      * @throws NoSuchElementException   If the AVLTree is empty.
      */
     private void searchText() throws IllegalArgumentException, NoSuchElementException {
-        String text = finderText.getText().toLowerCase(); // Convertir la palabra buscada a minúsculas
+        String searchText = finderText.getText(); // No convertir la frase buscada a minúsculas
 
-        if (!text.isEmpty()) {
+        if (!searchText.isEmpty()) {
             AVLTree avlTree = documentParser.getAVLTree();
 
             if (avlTree == null) {
@@ -122,28 +124,60 @@ public class FinderController implements Initializable {
                 return;
             }
 
-            TextFinder textFinder = new TextFinder();
-            Result[] results = textFinder.findText(text, avlTree);
-
-            if (results.length > 0) {
-                System.out.println("Resultados de la búsqueda:");
-                for (Result result : results) {
-                    System.out.println(result.getFragment());
-                }
-
-                // Resaltar la palabra en el TextAreaController
-                textAreaController.highlightWord(textAreaController.getContent(), text); // Convertir el contenido a minúsculas
+            // Llamar a searchPhrase si searchText contiene espacios (es decir, es una frase)
+            if (searchText.contains(" ")) {
+                searchPhrase(searchText);
             } else {
-                System.out.println("No se encontraron resultados para la búsqueda.");
+                // Si no contiene espacios, buscar como una palabra individual
+                TextFinder textFinder = new TextFinder();
+                Result[] results = textFinder.findText(searchText.toLowerCase(), avlTree); // Convertir la palabra individual a minúsculas
+
+                if (results.length > 0) {
+                    System.out.println("Resultados de la búsqueda:");
+                    for (Result result : results) {
+                        System.out.println(result.getFragment());
+                    }
+
+                    // Resaltar la palabra en el TextAreaController
+                    textAreaController.highlightWord(textAreaController.getContent(), searchText.toLowerCase()); // Convertir la palabra individual a minúsculas
+                } else {
+                    System.out.println("No se encontraron resultados para la búsqueda.");
+                }
             }
 
-            System.out.println("Texto buscado: " + text);
+            System.out.println("Texto buscado: " + searchText);
         } else {
             throw new IllegalArgumentException("No se puede buscar una palabra o frase vacía.");
         }
     }
 
+    private void searchPhrase(String phrase) {
+        String content = textAreaController.getContent(); // Obtener el contenido del TextArea
 
+        if (!phrase.isEmpty() && !content.isEmpty()) {
+            // Crear un patrón de búsqueda con la frase completa
+            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(phrase) + "\\b", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(content);
+
+            while (matcher.find()) {
+                // Resaltar la frase encontrada en el TextFlow
+                textAreaController.highlightPhrase(content, matcher.start(), matcher.end());
+            }
+        } else {
+            System.out.println("La frase o el contenido están vacíos.");
+        }
+    }
+
+    private List<String> extractWordsFromPhrase(String phrase) {
+        List<String> words = new ArrayList<>();
+        StringTokenizer tokenizer = new StringTokenizer(phrase);
+
+        while (tokenizer.hasMoreTokens()) {
+            words.add(tokenizer.nextToken());
+        }
+
+        return words;
+    }
 
 
     public void setTextAreaController(TextAreaController textAreaController) {
