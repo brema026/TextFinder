@@ -155,14 +155,7 @@ public class FinderController implements Initializable {
         String content = textAreaController.getContent(); // Obtener el contenido del TextArea
 
         if (!phrase.isEmpty() && !content.isEmpty()) {
-            // Crear un patrón de búsqueda con la frase completa
-            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(phrase) + "\\b", Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(content);
-
-            while (matcher.find()) {
-                // Resaltar la frase encontrada en el TextFlow
-                textAreaController.highlightPhrase(content, matcher.start(), matcher.end());
-            }
+            textAreaController.highlightPhrase(content, phrase);
         } else {
             System.out.println("La frase o el contenido están vacíos.");
         }

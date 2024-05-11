@@ -82,20 +82,37 @@ public class TextAreaController implements Initializable {
         }
     }
 
-    public void highlightPhrase(String content, int startIdx, int endIdx) {
+    public void highlightPhrase(String content, String phrase) {
         textFlow.getChildren().clear();
 
-        // Agregar el texto antes de la frase resaltada
-        String beforeText = content.substring(0, startIdx);
-        textFlow.getChildren().add(new Text(beforeText));
+        if (!phrase.isEmpty() && !content.isEmpty()) {
+            // Crear un patrón de búsqueda con la frase completa
+            Pattern pattern = Pattern.compile("\\b" + Pattern.quote(phrase) + "\\b", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(content);
 
-        // Agregar la frase resaltada
-        String highlightedText = content.substring(startIdx, endIdx);
-        textFlow.getChildren().add(createHighlightedText(highlightedText));
+            int lastMatchEnd = 0;
+            while (matcher.find()) {
+                // Agregar el texto entre las coincidencias anteriores y la actual
+                if (matcher.start() > lastMatchEnd) {
+                    String beforeText = content.substring(lastMatchEnd, matcher.start());
+                    textFlow.getChildren().add(new Text(beforeText));
+                }
 
-        // Agregar el texto después de la frase resaltada
-        String afterText = content.substring(endIdx);
-        textFlow.getChildren().add(new Text(afterText));
+                // Agregar la frase resaltada
+                String highlightedText = content.substring(matcher.start(), matcher.end());
+                textFlow.getChildren().add(createHighlightedText(highlightedText));
+
+                lastMatchEnd = matcher.end();
+            }
+
+            // Agregar el texto después de la última coincidencia
+            if (lastMatchEnd < content.length()) {
+                String afterText = content.substring(lastMatchEnd);
+                textFlow.getChildren().add(new Text(afterText));
+            }
+        } else {
+            System.out.println("La frase o el contenido están vacíos.");
+        }
     }
 
 
