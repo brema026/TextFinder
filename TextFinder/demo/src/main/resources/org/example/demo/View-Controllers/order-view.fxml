@@ -8,12 +8,14 @@
 <VBox styleClass="order-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.demo.OrderViewController">
     <VBox>
-        <ComboBox promptText="Organizar por">
+        <ComboBox promptText="Organizar por" styleClass="area-orderr">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="Opción 1"/>
                     <String fx:value="Opción 2"/>
                     <String fx:value="Opción 3"/>
+                    <String fx:value="Opción 5"/>
+                    <String fx:value="Opción 6"/>
                 </FXCollections>
             </items>
         </ComboBox>

@@ -67,8 +67,42 @@
     -fx-border-radius: 18px;
 }
 
+.area-orderr{
+    -fx-background-color:#0E2626;
+    -fx-pref-width:420px;
+    -fx-pref-height:50px;
+}
+
+.list-cell{
+    -fx-background-color:#0E2626;
+    -fx-spacing: 2px;
+    -fx-text-fill: white;
+}
+
+.list-cell:hover{
+    -fx-background-color: #0A4C4C;
+}
+
 .highlightedText {
     -fx-font-weight: bold;
     -fx-underline: true;
     -fx-fill: #B22222;
+}
+.result-area .scroll-bar:vertical {
+    -fx-background-color: #0E2626; /* Color de fondo de la barra */
+}
+
+/* Estilos para el botón de desplazamiento hacia arriba */
+.result-area .scroll-bar:vertical .increment-button {
+    -fx-background-color: #0A1C1C; /* Color de fondo del botón */
+}
+
+/* Estilos para el botón de desplazamiento hacia abajo */
+.result-area .scroll-bar:vertical .decrement-button {
+    -fx-background-color: #0A1C1C; /* Color de fondo del botón */
+}
+
+/* Estilos para el control deslizante de la barra de desplazamiento */
+.result-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #0A4C4C; /* Color de fondo del control deslizante */
 }

@@ -37,6 +37,8 @@ public class AppController implements Initializable {
         loadResultSection();
         // Configurar el controlador del área de texto en el controlador del buscador
         finderController.setTextAreaController(textAreaController);
+        finderController.setResultController(resultController);
+        resultController.setFinderController(finderController);
 
         DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
         try {

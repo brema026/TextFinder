@@ -18,10 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FinderController implements Initializable {
 
@@ -41,6 +38,7 @@ public class FinderController implements Initializable {
     private TextAreaController textAreaController;
     private File storageFolder;
     private DocumentParser documentParser;
+    private ResultController resultController;
 
     public FinderController() {
         libraryManager = LibraryManager.getInstance();
@@ -67,7 +65,7 @@ public class FinderController implements Initializable {
             try {
                 searchText();
             } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                ex.printStackTrace(); // o muestra un mensaje de error al usuario
             }
         });
 
@@ -113,6 +111,15 @@ public class FinderController implements Initializable {
      * @throws IllegalArgumentException If the text to search is empty.
      * @throws NoSuchElementException   If the AVLTree is empty.
      */
+    public void setResultController(ResultController resultController) {
+        this.resultController = resultController;
+    }
+
+    public String getTextFromFinder() {
+        String palabra = finderText.getText();
+        return palabra;
+    }
+
     private void searchText() throws IllegalArgumentException, NoSuchElementException {
         String searchText = finderText.getText(); // No convertir la frase buscada a minúsculas
 
@@ -140,6 +147,11 @@ public class FinderController implements Initializable {
 
                     // Resaltar la palabra en el TextAreaController
                     textAreaController.highlightWord(textAreaController.getContent(), searchText.toLowerCase()); // Convertir la palabra individual a minúsculas
+
+                    if (resultController != null) {
+                        resultController.displayResults(results);
+                    }
+
                 } else {
                     System.out.println("No se encontraron resultados para la búsqueda.");
                 }
