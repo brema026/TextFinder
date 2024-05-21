@@ -140,6 +140,18 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         return current.value;
     }
 
+    public void set(int index, T element) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+
+        Node<T> current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        current.value = element;
+    }
+
     /**
      * Adds to the end all contained elements from a given SinglyLinkedList
      * @param list List to add to the actual list.
@@ -190,5 +202,6 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         result.append("]");
         return result.toString();
     }
+
 
 }

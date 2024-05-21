@@ -19,6 +19,10 @@ import javafx.collections.FXCollections;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 public class FinderController implements Initializable {
 
@@ -34,11 +38,13 @@ public class FinderController implements Initializable {
     private TextField finderText;
     @FXML
     private ListView<String> libraryListView;
+    private OrderViewController.SortOption currentSortOption;
     private LibraryManager libraryManager;
     private TextAreaController textAreaController;
     private File storageFolder;
     private DocumentParser documentParser;
     private ResultController resultController;
+    private OrderViewController orderViewController;
 
     public FinderController() {
         libraryManager = LibraryManager.getInstance();
@@ -50,13 +56,12 @@ public class FinderController implements Initializable {
                 System.err.println("No se pudo crear la carpeta 'documents'.");
             }
         }
-
+        currentSortOption = null;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        // Create imageview with background image
         ImageView viewFind = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("images/find.png"))));
         viewFind.setFitWidth(25);
         viewFind.setFitHeight(25);
@@ -65,7 +70,7 @@ public class FinderController implements Initializable {
             try {
                 searchText();
             } catch (Exception ex) {
-                ex.printStackTrace(); // o muestra un mensaje de error al usuario
+                ex.printStackTrace();
             }
         });
 
@@ -103,6 +108,8 @@ public class FinderController implements Initializable {
                 }
             }
         }
+
+        refreshListView();
     }
 
     /**
@@ -113,6 +120,11 @@ public class FinderController implements Initializable {
      */
     public void setResultController(ResultController resultController) {
         this.resultController = resultController;
+    }
+
+    public void setOrderViewController(OrderViewController orderViewController) {
+        this.orderViewController = orderViewController;
+        this.orderViewController.setFinderController(this);
     }
 
     public String getTextFromFinder() {
@@ -223,37 +235,62 @@ public class FinderController implements Initializable {
             File destFile = new File(storageFolder, file.getName());
             Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             System.out.println("Document List after adding file: " + libraryManager.getDocuments());
-            refreshListView();
 
-            String content = documentParser.parseDocument(file); // Llamar al método parseDocument() de la instancia
+            String content = documentParser.parseDocument(file);
 
             if (textAreaController != null) {
                 textAreaController.setContent(content);
             } else {
                 System.err.println("TextAreaController no ha sido inicializado.");
             }
+            applyCurrentSort();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
+    public void sortDocuments(OrderViewController.SortOption sortOption) {
+        this.currentSortOption = sortOption;
+
+        if (sortOption != null) {
+            switch (sortOption) {
+                case NAME:
+                    libraryManager.quicksort();
+                    break;
+                case DATE:
+                    libraryManager.bubblesort();
+                    break;
+                case SIZE:
+                    libraryManager.radixsort();
+                    break;
+            }
+        }
+        refreshListView();
+    }
+
     private void refreshListView() {
         ObservableList<String> items = FXCollections.observableArrayList();
-
         SinglyLinkedList<Document> documents = libraryManager.getDocuments();
-        System.out.println("Tamaño de la lista de documentos: " + documents.getSize());
 
         for (int i = 0; i < documents.getSize(); i++) {
             Document document = documents.get(i);
             items.add(document.getFileName());
         }
 
-        System.out.println("Items antes de establecerla en la ListView: " + items);
-
         libraryListView.setItems(items);
         libraryListView.refresh();
     }
+
+    private void applyCurrentSort() {
+        if (currentSortOption != null) {
+            sortDocuments(currentSortOption);
+        }
+    }
+
+    /*public void setCurrentSortOption(OrderViewController.SortOption sortOption) {
+        this.currentSortOption = sortOption;
+    }*/
 
     private void updateTextArea(String selectedFileName) {
         File file = new File(storageFolder, selectedFileName);
@@ -268,7 +305,6 @@ public class FinderController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     private boolean isDocumentLoaded(String fileName) {
         ObservableList<String> items = libraryListView.getItems();

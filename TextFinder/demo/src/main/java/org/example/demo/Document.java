@@ -62,6 +62,15 @@ public class Document {
     }
 
     /**
+     * Gets the document last modified date in milliseconds since the epoch.
+     *
+     * @return The document last modified date in milliseconds.
+     */
+    public Long getDate() {
+        return date != null ? date : 0L;
+    }
+
+    /**
      * Gets the document last modified date in a readable format.
      *
      * @return The document last modified date in a readable format.
@@ -77,7 +86,7 @@ public class Document {
      * @return The document size.
      */
     public Long getSize() {
-        return size;
+        return size != null ? size : 0L;
     }
 
     /**

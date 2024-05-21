@@ -130,6 +130,90 @@ public class LibraryManager {
      *
      * @return The library documents list.
      */
+
+    public void quicksort() {
+        quicksort(documents, 0, documents.getSize() - 1);
+    }
+
+    private void quicksort(SinglyLinkedList<Document> documents, int low, int high) {
+        if (low < high) {
+            int pi = partition(documents, low, high);
+            quicksort(documents, low, pi - 1);
+            quicksort(documents, pi + 1, high);
+        }
+    }
+
+    private int partition(SinglyLinkedList<Document> documents, int low, int high) {
+        Document pivot = documents.get(high);
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (documents.get(j).getFileName().compareTo(pivot.getFileName()) < 0) {
+                i++;
+                Document temp = documents.get(i);
+                documents.set(i, documents.get(j));
+                documents.set(j, temp);
+            }
+        }
+        Document temp = documents.get(i + 1);
+        documents.set(i + 1, documents.get(high));
+        documents.set(high, temp);
+        return i + 1;
+    }
+
+    public void bubblesort() {
+        int n = documents.getSize();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (documents.get(j).getDate() > documents.get(j + 1).getDate()) {
+                    Document temp = documents.get(j);
+                    documents.set(j, documents.get(j + 1));
+                    documents.set(j + 1, temp);
+                }
+            }
+        }
+    }
+
+    public void radixsort() {
+        int max = getMaxSize();
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            countSortBySize(documents, exp);
+        }
+    }
+
+    private int getMaxSize() {
+        int n = documents.getSize();
+        long max = documents.get(0).getSize();
+        for (int i = 1; i < n; i++) {
+            if (documents.get(i).getSize() > max) {
+                max = documents.get(i).getSize();
+            }
+        }
+        return (int) max;
+    }
+
+    private void countSortBySize(SinglyLinkedList<Document> documents, int exp) {
+        int n = documents.getSize();
+        Document[] output = new Document[n];
+        int[] count = new int[10];
+
+        for (int i = 0; i < n; i++) {
+            count[(int) ((documents.get(i).getSize() / exp) % 10)]++;
+        }
+
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[(int) ((documents.get(i).getSize() / exp) % 10)] - 1] = documents.get(i);
+            count[(int) ((documents.get(i).getSize() / exp) % 10)]--;
+        }
+
+        for (int i = 0; i < n; i++) {
+            documents.set(i, output[i]);
+        }
+    }
+
     public SinglyLinkedList<Document> getDocuments() {
         return documents;
     }
