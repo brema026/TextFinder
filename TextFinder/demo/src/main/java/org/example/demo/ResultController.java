@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
 
 public class ResultController implements Initializable {
     @FXML
-    private ListView<String> resultList;
+    public ListView<String> resultList;
     private FinderController finderController;
     private TextAreaController textAreaController;
 
@@ -124,4 +124,91 @@ public class ResultController implements Initializable {
     }
     public void setTextAreaController(TextAreaController textAreaController) {
         this.textAreaController = textAreaController;}
+
+    public void quicksort(ObservableList<String> results) {
+        quicksort(results, 0, results.size() - 1);
+    }
+
+    private void quicksort(ObservableList<String> results, int low, int high) {
+        if (low < high) {
+            int pi = partition(results, low, high);
+            quicksort(results, low, pi - 1);
+            quicksort(results, pi + 1, high);
+        }
+    }
+
+    private int partition(ObservableList<String> results, int low, int high) {
+        String pivot = results.get(high);
+        String pivotName = pivot.split(" --> ")[1].toLowerCase();
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            String currentName = results.get(j).split(" --> ")[1].toLowerCase();
+            if (currentName.compareTo(pivotName) <= 0) {
+                i++;
+                swap(results, i, j);
+            }
+        }
+        swap(results, i + 1, high);
+        return i + 1;
+    }
+
+    private void swap(ObservableList<String> results, int i, int j) {
+        if (i == j) return;
+        String temp = results.get(i);
+        results.set(i, results.get(j));
+        results.set(j, temp);
+    }
+
+    public void bubblesort(ObservableList<String> results) {
+        int n = results.size();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                String date1 = results.get(j).split(" --> ")[2];
+                String date2 = results.get(j + 1).split(" --> ")[2];
+                if (date1.compareTo(date2) > 0) {
+                    swap(results, j, j + 1);
+                }
+            }
+        }
+    }
+
+    public void radixsort(ObservableList<String> results) {
+        int max = getMaxSize(results);
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            countSortBySize(results, exp);
+        }
+    }
+
+    private int getMaxSize(ObservableList<String> results) {
+        int max = results.stream()
+                .mapToInt(result -> Integer.parseInt(result.split(" --> ")[2].replaceAll("[^0-9]", "")))
+                .max()
+                .orElse(0);
+        return max;
+    }
+
+    private void countSortBySize(ObservableList<String> results, int exp) {
+        int n = results.size();
+        String[] output = new String[n];
+        int[] count = new int[10];
+
+        for (int i = 0; i < n; i++) {
+            int size = Integer.parseInt(results.get(i).split(" --> ")[2].replaceAll("[^0-9]", ""));
+            count[(size / exp) % 10]++;
+        }
+
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            int size = Integer.parseInt(results.get(i).split(" --> ")[2].replaceAll("[^0-9]", ""));
+            output[count[(size / exp) % 10] - 1] = results.get(i);
+            count[(size / exp) % 10]--;
+        }
+
+        for (int i = 0; i < n; i++) {
+            results.set(i, output[i]);
+        }
+    }
 }

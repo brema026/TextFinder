@@ -21,6 +21,7 @@ public class OrderViewController implements Initializable {
     private Button sizeButton;
 
     private FinderController finderController;
+    private ResultController resultController;
 
     public enum SortOption {
         NAME("Nombre"),
@@ -36,15 +37,6 @@ public class OrderViewController implements Initializable {
         public String getDisplayName() {
             return displayName;
         }
-
-        /*public static SortOption fromDisplayName(String displayName) {
-            for (SortOption option : values()) {
-                if (option.getDisplayName().equals(displayName)) {
-                    return option;
-                }
-            }
-            throw new IllegalArgumentException("Unknown display name: " + displayName);
-        }*/
     }
 
     @Override
@@ -58,21 +50,28 @@ public class OrderViewController implements Initializable {
         this.finderController = finderController;
     }
 
+    public void setResultController(ResultController resultController) {
+        this.resultController = resultController;
+    }
+
     public void sortName() {
-        if (finderController != null) {
+        if (finderController != null && resultController != null) {
             finderController.sortDocuments(SortOption.NAME);
+            resultController.quicksort(resultController.resultList.getItems());
         }
     }
 
     public void sortDate() {
-        if (finderController != null) {
+        if (finderController != null && resultController != null) {
             finderController.sortDocuments(SortOption.DATE);
+            resultController.bubblesort(resultController.resultList.getItems());
         }
     }
 
     public void sortSize() {
-        if (finderController != null) {
+        if (finderController != null && resultController != null) {
             finderController.sortDocuments(SortOption.SIZE);
+            resultController.radixsort(resultController.resultList.getItems());
         }
     }
 }
