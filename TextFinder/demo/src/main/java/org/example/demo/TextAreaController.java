@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -131,26 +132,22 @@ public class TextAreaController implements Initializable {
             Node node = textFlow.getChildren().get(position);
             if (node instanceof Text) {
                 Text textNode = (Text) node;
-                double layoutY = textNode.getBoundsInParent().getMinY();
-                double layoutHeight = textFlow.getHeight();
+                // Obtener las coordenadas Y del nodo en relación con el TextFlow
+                Bounds bounds = textNode.getBoundsInParent();
+                double nodeMinY = bounds.getMinY();
+                double nodeMaxY = bounds.getMaxY();
+                // Obtener la altura visible del ScrollPane
                 double visibleHeight = scrollPane.getViewportBounds().getHeight();
-
-                System.out.println("layoutY: " + layoutY);
-                System.out.println("layoutHeight: " + layoutHeight);
-                System.out.println("visibleHeight: " + visibleHeight);
-
-                // Calcular el desplazamiento necesario para que el nodo esté centrado
-                double scrollPosition = Math.max(0, layoutY - (visibleHeight / 2));
-
-                System.out.println("scrollPosition: " + scrollPosition);
-
-                // Ajustar el desplazamiento máximo para no exceder el contenido visible
-                scrollPosition = Math.min(scrollPosition, layoutHeight - visibleHeight);
-
-                System.out.println("Adjusted scrollPosition: " + scrollPosition);
-
-                // Establecer el valor de desplazamiento vertical del ScrollPane
-                scrollPane.setVvalue(scrollPosition / layoutHeight);
+                // Obtener el valor de desplazamiento actual
+                double currentScrollPosition = scrollPane.getVvalue() * (textFlow.getHeight() - visibleHeight);
+                // Calcular la posición del nodo centrado en relación con el TextFlow
+                double targetScrollPosition = (nodeMinY + nodeMaxY - visibleHeight) / 2.0;
+                // Ajustar la posición para mantenerla dentro de los límites
+                targetScrollPosition = Math.max(0, Math.min(targetScrollPosition, textFlow.getHeight() - visibleHeight));
+                // Calcular el cambio necesario en el desplazamiento
+                double scrollChange = targetScrollPosition - currentScrollPosition;
+                // Aplicar el cambio en el desplazamiento
+                scrollPane.setVvalue(scrollPane.getVvalue() + scrollChange / (textFlow.getHeight() - visibleHeight));
             }
         }
     }

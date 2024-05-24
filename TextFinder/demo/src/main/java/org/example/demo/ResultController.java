@@ -27,23 +27,22 @@ public class ResultController implements Initializable {
     private void handleItemClick(javafx.scene.input.MouseEvent event) {
         if (event.getClickCount() == 1) {
             String selectedItem = resultList.getSelectionModel().getSelectedItem();
-            System.out.println("SelectedItem: " + selectedItem); // Debugging
+            System.out.println("SelectedItem: " + selectedItem);
 
             // Dividir la cadena por el separador " --> "
             String[] parts = selectedItem.split(" --> ");
 
-            if (parts.length == 3) {
+            if (parts.length >= 2) { // Cambiado de 3 a 2
                 String searchText = parts[0].trim();
                 String selectedFileName = parts[1].trim();
-                String positionPart = parts[2].trim();
+                String positionPart = parts.length == 3 ? parts[2].trim() : null; // Manejar cuando no haya posición
 
                 try {
-                    int[] position = getPositionFromSelectedItem(positionPart);
+                    int[] position = positionPart != null ? getPositionFromSelectedItem(positionPart) : new int[]{0}; // Usar 0 si no hay posición
                     if (finderController != null) {
                         finderController.updateTextArea(selectedFileName);
                         System.out.println("Listo");
 
-                        // Llamar a focusWord solo con el primer valor del índice
                         textAreaController.focusWord(position[0]);
                     }
                 } catch (IllegalArgumentException e) {
@@ -57,7 +56,6 @@ public class ResultController implements Initializable {
 
     private int[] getPositionFromSelectedItem(String positionPart) {
         try {
-            // Deserializa la cadena a un array de enteros
             String[] parts = positionPart.split(",");
             int[] position = new int[parts.length];
             for (int i = 0; i < parts.length; i++) {
@@ -65,34 +63,11 @@ public class ResultController implements Initializable {
             }
             return position;
         } catch (NumberFormatException e) {
-            // Manejar el caso en el que la posición no sea un número válido
             throw new IllegalArgumentException("No se pudo extraer la posición del archivo: " + positionPart, e);
         }
     }
 
-    public void setFinderController(FinderController finderController) {
-        this.finderController = finderController;
-    }
 
-    public void displayStringResults(String[] results) {
-        ObservableList<String> items = FXCollections.observableArrayList();
-        resultList.getItems().clear();
-        String searchText = finderController.getTextFromFinder();
-
-        List<String> allFileNames = finderController.getAllFileNames(); // Obtener todos los nombres de archivo
-
-        for (String result : results) {
-            // Crear el elemento que mostrará el texto buscado junto con el nombre del archivo en el que se encontró
-            for (String fileName : allFileNames) {
-                if (result.contains(fileName)) {
-                    String item = result;
-                    items.add(item);
-                }
-            }
-        }
-
-        resultList.setItems(items);
-    }
 
 
     public void displayResults(Result[] results) {
@@ -112,6 +87,25 @@ public class ResultController implements Initializable {
 
         resultList.setItems(items);
     }
+    public void displayStringResults(String[] results) {
+        ObservableList<String> items = FXCollections.observableArrayList();
+        resultList.getItems().clear();
+        String searchText = finderController.getTextFromFinder();
+
+        List<String> allFileNames = finderController.getAllFileNames();
+
+        for (String result : results) {
+            for (String fileName : allFileNames) {
+                if (result.contains(fileName)) {
+                    String item = result;
+                    items.add(item);
+                }
+            }
+        }
+
+        resultList.setItems(items);
+    }
+
     private String serializePosition(int[] position) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < position.length; i++) {
@@ -122,6 +116,10 @@ public class ResultController implements Initializable {
         }
         return sb.toString();
     }
+
     public void setTextAreaController(TextAreaController textAreaController) {
         this.textAreaController = textAreaController;}
+    public void setFinderController(FinderController finderController) {
+        this.finderController = finderController;
+    }
 }
