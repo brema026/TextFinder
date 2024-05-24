@@ -127,30 +127,16 @@ public class TextAreaController implements Initializable {
         return highlightedText;
     }
     public void focusWord(int position) {
-        if (position >= 0 && position < textFlow.getChildren().size()) {
-            Node node = textFlow.getChildren().get(position);
-            if (node instanceof Text) {
-                Text textNode = (Text) node;
-                double layoutY = textNode.getBoundsInParent().getMinY();
-                double layoutHeight = textFlow.getHeight();
+        if (textFlow.getChildren().size() == 1 && textFlow.getChildren().get(0) instanceof Text) {
+            Text textNode = (Text) textFlow.getChildren().get(0);
+            if (position >= 0 && position < textNode.getText().length()) {
                 double visibleHeight = scrollPane.getViewportBounds().getHeight();
-
-                System.out.println("layoutY: " + layoutY);
-                System.out.println("layoutHeight: " + layoutHeight);
-                System.out.println("visibleHeight: " + visibleHeight);
-
-                // Calcular el desplazamiento necesario para que el nodo esté centrado
-                double scrollPosition = Math.max(0, layoutY - (visibleHeight / 2));
-
-                System.out.println("scrollPosition: " + scrollPosition);
-
-                // Ajustar el desplazamiento máximo para no exceder el contenido visible
-                scrollPosition = Math.min(scrollPosition, layoutHeight - visibleHeight);
-
-                System.out.println("Adjusted scrollPosition: " + scrollPosition);
-
-                // Establecer el valor de desplazamiento vertical del ScrollPane
-                scrollPane.setVvalue(scrollPosition / layoutHeight);
+                double nodeHeight = textNode.getLayoutBounds().getHeight();
+                double currentScrollPosition = scrollPane.getVvalue() * (textFlow.getHeight() - visibleHeight);
+                double targetScrollPosition = textNode.getLayoutY() + nodeHeight / 2 - visibleHeight / 2;
+                targetScrollPosition = Math.max(0, Math.min(targetScrollPosition, textFlow.getHeight() - visibleHeight));
+                double scrollChange = targetScrollPosition - currentScrollPosition;
+                scrollPane.setVvalue(scrollPane.getVvalue() + scrollChange / (textFlow.getHeight() - visibleHeight));
             }
         }
     }

@@ -178,37 +178,62 @@ public class FinderController implements Initializable {
 
     private void searchPhrase(String phrase) {
         String searchText = phrase.toLowerCase();
-        List<String> foundPhrases = new ArrayList<>();
-        List<String> allFileNames = getAllFileNames();
+        String selectedFileName = libraryListView.getSelectionModel().getSelectedItem();
 
-        for (String fileName : allFileNames) {
-            String content = loadFileContent(fileName);
+        if (selectedFileName != null) {
+            // Obtener el contenido del archivo seleccionado actualmente
+            String selectedFileContent = loadSelectedFileContent(selectedFileName);
 
-            if (!content.isEmpty()) {
-                // Buscar la frase en el contenido del archivo
-                if (content.toLowerCase().contains(searchText)) {
-                    List<String> phrases = textAreaController.highlightPhrase(content, searchText);
-                    if (phrases != null && !phrases.isEmpty()) {
-                        for (String foundPhrase : phrases) {
-                            foundPhrases.add(foundPhrase + "  -->  " + fileName);
+            if (!selectedFileContent.isEmpty()) {
+                // Lista para almacenar todos los resultados encontrados
+                List<String> allResults = new ArrayList<>();
+
+                // Buscar en el archivo seleccionado
+                List<String> selectedFileResults = textAreaController.highlightPhrase(selectedFileContent, searchText);
+                if (selectedFileResults != null && !selectedFileResults.isEmpty()) {
+                    for (String result : selectedFileResults) {
+                        allResults.add(result + "  -->  " + selectedFileName); // Agregar resultados del archivo seleccionado
+                    }
+                }
+
+                // Buscar en los demás archivos
+                List<String> allFileNames = getAllFileNames();
+                for (String fileName : allFileNames) {
+                    if (!fileName.equals(selectedFileName)) {
+                        // Utilizar el contenido del archivo seleccionado
+                        List<String> phrases = textAreaController.highlightPhrase(selectedFileContent, searchText);
+                        if (phrases != null && !phrases.isEmpty()) {
+                            for (String foundPhrase : phrases) {
+                                allResults.add(foundPhrase + "  -->  " + fileName); // Agregar resultados de otros archivos
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        if (foundPhrases.isEmpty()) {
-            System.out.println("No se encontraron resultados para la búsqueda de la frase.");
+                // Mostrar todos los resultados encontrados
+                if (!allResults.isEmpty() && resultController != null) {
+                    resultController.displayStringResults(allResults.toArray(new String[0]));
+                }
+            } else {
+                System.out.println("El contenido del archivo seleccionado está vacío.");
+            }
         } else {
-            System.out.println("Resultados de la búsqueda de la frase:");
-            for (String foundPhrase : foundPhrases) {
-                System.out.println(foundPhrase);
-            }
-            if (resultController != null) {
-                resultController.displayStringResults(foundPhrases.toArray(new String[0]));
-            }
+            System.out.println("No se ha seleccionado ningún archivo en la lista.");
         }
     }
+
+    private String loadSelectedFileContent(String selectedFileName) {
+        if (loadedContents.containsKey(selectedFileName)) {
+            // Si el contenido ya ha sido cargado anteriormente, retornarlo
+            return loadedContents.get(selectedFileName);
+        } else {
+            // Si no ha sido cargado, cargarlo desde el disco y almacenarlo
+            String content = loadFileContent(selectedFileName);
+            loadedContents.put(selectedFileName, content);
+            return content;
+        }
+    }
+
 
     private String loadFileContent(String fileName) {
         if (loadedContents.containsKey(fileName)) {
