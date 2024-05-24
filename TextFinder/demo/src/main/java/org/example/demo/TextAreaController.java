@@ -1,5 +1,6 @@
 package org.example.demo;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -36,13 +37,9 @@ public class TextAreaController implements Initializable {
      * @param afterText      The text to be displayed after the highlighted section.
      */
     private void setText(String beforeText, String highlightedText, String afterText) {
+        Text fullText = new Text(beforeText + highlightedText + afterText);
         textFlow.getChildren().clear();
-
-        textFlow.getChildren().addAll(
-                new Text(beforeText),
-                createHighlightedText(highlightedText),
-                new Text(afterText)
-        );
+        textFlow.getChildren().add(fullText);
     }
 
     public String getContent() {
@@ -128,25 +125,15 @@ public class TextAreaController implements Initializable {
         return highlightedText;
     }
     public void focusWord(int position) {
-        if (position >= 0 && position < textFlow.getChildren().size()) {
-            Node node = textFlow.getChildren().get(position);
-            if (node instanceof Text) {
-                Text textNode = (Text) node;
-                // Obtener las coordenadas Y del nodo en relación con el TextFlow
-                Bounds bounds = textNode.getBoundsInParent();
-                double nodeMinY = bounds.getMinY();
-                double nodeMaxY = bounds.getMaxY();
-                // Obtener la altura visible del ScrollPane
+        if (textFlow.getChildren().size() == 1 && textFlow.getChildren().get(0) instanceof Text) {
+            Text textNode = (Text) textFlow.getChildren().get(0);
+            if (position >= 0 && position < textNode.getText().length()) {
                 double visibleHeight = scrollPane.getViewportBounds().getHeight();
-                // Obtener el valor de desplazamiento actual
+                double nodeHeight = textNode.getLayoutBounds().getHeight();
                 double currentScrollPosition = scrollPane.getVvalue() * (textFlow.getHeight() - visibleHeight);
-                // Calcular la posición del nodo centrado en relación con el TextFlow
-                double targetScrollPosition = (nodeMinY + nodeMaxY - visibleHeight) / 2.0;
-                // Ajustar la posición para mantenerla dentro de los límites
+                double targetScrollPosition = textNode.getLayoutY() + nodeHeight / 2 - visibleHeight / 2;
                 targetScrollPosition = Math.max(0, Math.min(targetScrollPosition, textFlow.getHeight() - visibleHeight));
-                // Calcular el cambio necesario en el desplazamiento
                 double scrollChange = targetScrollPosition - currentScrollPosition;
-                // Aplicar el cambio en el desplazamiento
                 scrollPane.setVvalue(scrollPane.getVvalue() + scrollChange / (textFlow.getHeight() - visibleHeight));
             }
         }

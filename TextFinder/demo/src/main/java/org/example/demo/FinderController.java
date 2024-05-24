@@ -185,14 +185,19 @@ public class FinderController implements Initializable {
             String content = loadFileContent(fileName);
 
             if (!content.isEmpty()) {
+                // Realizar una copia del contenido original
+                String originalContent = content;
+
                 // Buscar la frase en el contenido del archivo
                 if (content.toLowerCase().contains(searchText)) {
-                    List<String> phrases = textAreaController.highlightPhrase(content, searchText);
+                    // Llamar a highlightPhrase con la copia del contenido
+                    List<String> phrases = textAreaController.highlightPhrase(originalContent, searchText);
                     if (phrases != null && !phrases.isEmpty()) {
                         for (String foundPhrase : phrases) {
                             foundPhrases.add(foundPhrase + "  -->  " + fileName);
                         }
                     }
+                    // No necesitamos actualizar loadedContents aquí
                 }
             }
         }
@@ -211,18 +216,21 @@ public class FinderController implements Initializable {
     }
 
     private String loadFileContent(String fileName) {
-        if (loadedContents.containsKey(fileName)) {
-            return loadedContents.get(fileName);
-        } else {
-            File file = new File(storageFolder, fileName);
-            try {
-                String content = documentParser.parseDocument(file);
-                loadedContents.put(fileName, content);
-                return content;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "";
+        File file = new File(storageFolder, fileName);
+        try {
+            String content = documentParser.parseDocument(file);
+            if (content.isEmpty()) {
+                System.err.println("El contenido del archivo " + fileName + " está vacío.");
+            } else {
+                System.out.println("Contenido del archivo " + fileName + ":");
+                System.out.println(content);
+                loadedContents.put(fileName, content); // Actualizar o agregar el contenido al mapa
             }
+            return content;
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error al cargar el contenido del archivo " + fileName + ": " + e.getMessage());
+            return "";
         }
     }
 
