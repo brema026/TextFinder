@@ -38,8 +38,6 @@ public class LibraryManager {
         } else {
             String filePath = file.getPath();
             String fileName = file.getName();
-
-            // Checks file extension
             String fileExtension = getFileExtension(filePath);
             DocumentType documentType = switch (fileExtension) {
                 case "txt" -> DocumentType.TXT;
@@ -47,15 +45,9 @@ public class LibraryManager {
                 case "docx" -> DocumentType.DOCX;
                 default -> throw new Exception("The given file is not a valid file.");
             };
-
-            // Reads the file
             String fileContent = readFile(file);
-
-            // Creates the document object
             Document document = new Document(filePath, documentType, fileName,
                     file.lastModified(), file.length(), fileContent);
-
-            // Add the object to the list
             documents.add(document);
         }
     }
@@ -118,18 +110,103 @@ public class LibraryManager {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    Document document = new Document(file.getPath(), null, file.getName(), null, null, null);
-                    documents.add(document);
+                    try {
+                        addFile(file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Gets the library documents list.
-     *
-     * @return The library documents list.
-     */
+    public void quicksort(SinglyLinkedList<Document> documents) {
+        quicksort(documents, 0, documents.getSize() - 1);
+    }
+
+    private void quicksort(SinglyLinkedList<Document> documents, int low, int high) {
+        if (low < high) {
+            int pi = partition(documents, low, high);
+            quicksort(documents, low, pi - 1);
+            quicksort(documents, pi + 1, high);
+        }
+    }
+
+    private int partition(SinglyLinkedList<Document> documents, int low, int high) {
+        Document pivot = documents.get(high);
+        String pivotName = pivot.getFileName().toLowerCase();
+        int i = low - 1;
+        for (int j = low; j < high; j++) {
+            if (documents.get(j).getFileName().toLowerCase().compareTo(pivotName) <= 0) {
+                i++;
+                swap(documents, i, j);
+            }
+        }
+        swap(documents, i + 1, high);
+        return i + 1;
+    }
+
+    private void swap(SinglyLinkedList<Document> documents, int i, int j) {
+        if (i == j) return;
+        Document temp = documents.get(i);
+        documents.set(i, documents.get(j));
+        documents.set(j, temp);
+    }
+
+    public void bubblesort() {
+        int n = documents.getSize();
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (documents.get(j).getDate() > documents.get(j + 1).getDate()) {
+                    Document temp = documents.get(j);
+                    documents.set(j, documents.get(j + 1));
+                    documents.set(j + 1, temp);
+                }
+            }
+        }
+    }
+
+    public void radixsort() {
+        int max = getMaxSize();
+        for (int exp = 1; max / exp > 0; exp *= 10) {
+            countSortBySize(documents, exp);
+        }
+    }
+
+    private int getMaxSize() {
+        int n = documents.getSize();
+        long max = documents.get(0).getSize();
+        for (int i = 1; i < n; i++) {
+            if (documents.get(i).getSize() > max) {
+                max = documents.get(i).getSize();
+            }
+        }
+        return (int) max;
+    }
+
+    private void countSortBySize(SinglyLinkedList<Document> documents, int exp) {
+        int n = documents.getSize();
+        Document[] output = new Document[n];
+        int[] count = new int[10];
+
+        for (int i = 0; i < n; i++) {
+            count[(int) ((documents.get(i).getSize() / exp) % 10)]++;
+        }
+
+        for (int i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[(int) ((documents.get(i).getSize() / exp) % 10)] - 1] = documents.get(i);
+            count[(int) ((documents.get(i).getSize() / exp) % 10)]--;
+        }
+
+        for (int i = 0; i < n; i++) {
+            documents.set(i, output[i]);
+        }
+    }
+
     public SinglyLinkedList<Document> getDocuments() {
         return documents;
     }

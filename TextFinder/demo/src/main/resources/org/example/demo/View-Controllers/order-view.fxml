@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox styleClass="order-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.demo.OrderViewController">
+<VBox styleClass="order-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.OrderViewController">
     <VBox>
-        <ComboBox promptText="Organizar por">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Opción 1"/>
-                    <String fx:value="Opción 2"/>
-                    <String fx:value="Opción 3"/>
-                </FXCollections>
-            </items>
-        </ComboBox>
+        <Button fx:id="nameButton" mnemonicParsing="false" onAction="#sortName" text="Nombre" />
+        <Button fx:id="dateButton" mnemonicParsing="false" onAction="#sortDate" text="Fecha" />
+        <Button fx:id="sizeButton" mnemonicParsing="false" onAction="#sortSize" text="Tamaño" />
     </VBox>
 </VBox>

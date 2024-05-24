@@ -51,25 +51,17 @@ public class TextFinder {
      * @return Result array that contains the founded word's data.
      */
     private Result[] findWord(String word, AVLTree avlTree) {
-        //  Search word in the AVL Tree
         TextData foundedWordData = avlTree.search(word);
 
         if (foundedWordData != null) {
-            //  Get occurrences from the founded word data
             SinglyLinkedList<Occurrence> occurrences = foundedWordData.getOccurrences();
-
-            //  Create an empty array with the size of the occurrences list to store all results
             int resultsSize = occurrences.getSize();
             Result[] results = new Result[resultsSize];
 
             int currentIndex = 0;
             while (currentIndex < resultsSize) {
                 Occurrence currentOccurrence = occurrences.get(currentIndex);
-
-                //  Create a Result object from the current occurrence
                 Result result = createResultFromOccurrence(currentOccurrence, false, -1);
-
-                //  Add the result object to the result array
                 results[currentIndex] = result;
                 currentIndex++;
             }
@@ -88,24 +80,14 @@ public class TextFinder {
      * @return Result array that contains the founded word's data.
      */
     private Result[] findPhrase(String phrase, AVLTree avlTree) {
-        //  Split phrase in words
         String[] phraseWords = splitPhrase(phrase);
-
-        //  Get the first word's occurrences
         String firstWord = phraseWords[0];
         TextData foundedWordData = avlTree.search(firstWord);
 
         if (foundedWordData != null) {
-            // Remove the first word from the phrase words list
             phraseWords = removeFirstWord(phraseWords);
-
-            //  Get occurrences from the founded word data
             SinglyLinkedList<Occurrence> occurrences = foundedWordData.getOccurrences();
-
-            // Find matching occurrences with the phrase
             SinglyLinkedList<Result> results = findMatchingOccurrences(phraseWords, occurrences);
-
-            // Transform the SinglyLinkedList to an array and return it
             return singlyLinkedListToArray(results);
 
         } else {
@@ -147,18 +129,11 @@ public class TextFinder {
         int currentOccurrenceIndex = 0;
         while (currentOccurrenceIndex < occurrencesSize) {
             Occurrence currentOccurrence = occurrences.get(currentOccurrenceIndex);
-
-            // Get the occurrence words
             int phraseSize = phraseWords.length;
             String[] occurrenceWords = getOccurrenceWords(currentOccurrence, phraseSize);
-
-            // Compare both phrase's words
             if (areSamePhrases(phraseWords, occurrenceWords)) {
-                //  Create a Result object from the current occurrence
                 int phraseEndPosition = currentOccurrence.position() + phraseSize;
                 Result result = createResultFromOccurrence(currentOccurrence, true, phraseEndPosition);
-
-                // Add the result object to the list
                 results.add(result);
             }
             currentOccurrenceIndex++;
@@ -204,18 +179,40 @@ public class TextFinder {
      * @param phraseEndPosition Position where the phrase ends.
      * @return The created Result object.
      */
+    /**
+     * Creates a Result object from a given Occurrence, this occurrence could be from a phrase or from a word.
+     *
+     * @param occurrence         Occurrence to create the Result object.
+     * @param isPhraseOccurrence Represents if the given occurrence is from a phrase.
+     * @param phraseEndPosition  Position where the phrase ends.
+     * @return The created Result object.
+     */
     private Result createResultFromOccurrence(Occurrence occurrence, boolean isPhraseOccurrence, int phraseEndPosition) {
         Document occurrenceDocument = occurrence.document();
         String documentContent = occurrenceDocument.getContent();
         int occurrenceStartPosition = occurrence.position();
+        String fragment;
 
         if (isPhraseOccurrence) {
-            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, phraseEndPosition});
-
+            int phraseStartPosition = occurrenceStartPosition;
+            int phraseEndIndex = phraseEndPosition;
+            if (phraseEndIndex > documentContent.length()) {
+                phraseEndIndex = documentContent.length();
+            }
+            fragment = documentContent.substring(phraseStartPosition, phraseEndIndex);
         } else {
-            return new Result(occurrenceDocument, documentContent, new int[]{occurrenceStartPosition, occurrenceStartPosition});
+            if (occurrenceStartPosition < documentContent.length()) {
+                fragment = documentContent.substring(occurrenceStartPosition, occurrenceStartPosition + 1);
+            } else {
+                fragment = "";
+            }
         }
+
+        return new Result(occurrenceDocument, fragment, new int[]{occurrenceStartPosition, phraseEndPosition}, true);
     }
+
+
+
 
     /**
      * Converts the linked list to an array.
