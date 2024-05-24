@@ -89,21 +89,21 @@
     -fx-underline: true;
     -fx-fill: #B22222;
 }
-.scroll-bar:vertical {
+.scroll-bar {
     -fx-background-color: #0E2626; /* Color de fondo de la barra */
 }
 
 /* Estilos para el botón de desplazamiento hacia arriba */
-.scroll-bar:vertical .increment-button {
+.scroll-bar .increment-button {
     -fx-background-color: #0A1C1C; /* Color de fondo del botón */
 }
 
 /* Estilos para el botón de desplazamiento hacia abajo */
-.scroll-bar:vertical .decrement-button {
+.scroll-bar .decrement-button {
     -fx-background-color: #0A1C1C; /* Color de fondo del botón */
 }
 
 /* Estilos para el control deslizante de la barra de desplazamiento */
-.scroll-bar:vertical .thumb {
+.scroll-bar .thumb {
     -fx-background-color: #0A4C4C; /* Color de fondo del control deslizante */
 }

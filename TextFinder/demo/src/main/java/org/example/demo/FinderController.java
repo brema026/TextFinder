@@ -255,7 +255,7 @@ public class FinderController implements Initializable {
         libraryListView.refresh();
     }
 
-    private void updateTextArea(String selectedFileName) {
+    public void updateTextArea(String selectedFileName) {
         File file = new File(storageFolder, selectedFileName);
         try {
             String content = documentParser.parseDocument(file);

@@ -39,6 +39,7 @@ public class AppController implements Initializable {
         finderController.setTextAreaController(textAreaController);
         finderController.setResultController(resultController);
         resultController.setFinderController(finderController);
+        resultController.setTextAreaController(textAreaController);
 
         DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
         try {
