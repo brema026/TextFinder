@@ -9,6 +9,7 @@ import org.apache.poi.ss.formula.functions.T;
 
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ResultController implements Initializable {
@@ -73,31 +74,39 @@ public class ResultController implements Initializable {
         this.finderController = finderController;
     }
 
+    public void displayStringResults(String[] results) {
+        ObservableList<String> items = FXCollections.observableArrayList();
+        resultList.getItems().clear();
+        String searchText = finderController.getTextFromFinder();
+
+        List<String> allFileNames = finderController.getAllFileNames(); // Obtener todos los nombres de archivo
+
+        for (String result : results) {
+            // Crear el elemento que mostrará el texto buscado junto con todos los nombres de archivo
+            for (String fileName : allFileNames) {
+                String item = result + "  -->  " + fileName;
+                items.add(item);
+            }
+        }
+
+        resultList.setItems(items);
+    }
+
+
     public void displayResults(Result[] results) {
         ObservableList<String> items = FXCollections.observableArrayList();
         resultList.getItems().clear();
         String searchText = finderController.getTextFromFinder();
 
         for (Result result : results) {
-            // Serializa la posición como una cadena
-            String positionString = serializePosition(result.getPosition());
-            String item = searchText + " --> " + result.getDocument().getFileName() + " --> " + positionString;
+            // Obtener el nombre del archivo de la instancia de Result
+            String fileName = result.getDocument().getFileName();
+            System.out.println("Nombre del archivo: " + fileName);
+            // Obtener la frase encontrada en el documento
+            String item = searchText + "  -->  " + fileName;
             items.add(item);
         }
-        resultList.setItems(items);
-    }
 
-    private String serializePosition(int[] position) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < position.length; i++) {
-            sb.append(position[i]);
-            if (i < position.length - 1) {
-                sb.append(",");
-            }
-        }
-        return sb.toString();
-    }
-    public void setTextAreaController(TextAreaController textAreaController) {
-        this.textAreaController = textAreaController;
+        resultList.setItems(items);
     }
 }

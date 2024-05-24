@@ -6,8 +6,8 @@ import dataStructures.SinglyLinkedList;
  * Represents the text data stored on the AVLTree
  */
 public class TextData {
-    String text; // The stored text
-    SinglyLinkedList<Occurrence> occurrences = new SinglyLinkedList<>(); // The text occurrence on the library documents
+    String text;
+    SinglyLinkedList<Occurrence> occurrences = new SinglyLinkedList<>();
 
     /**
      * TextData object constructor.
