@@ -119,11 +119,13 @@ public class FinderController implements Initializable {
      */
     public void setResultController(ResultController resultController) {
         this.resultController = resultController;
+        resultController.setFinderController(this);
     }
 
     public void setOrderViewController(OrderViewController orderViewController) {
         this.orderViewController = orderViewController;
         this.orderViewController.setFinderController(this);
+        this.orderViewController.setResultController(resultController);
     }
 
     public String getTextFromFinder() {
