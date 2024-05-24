@@ -101,12 +101,25 @@ public class ResultController implements Initializable {
         for (Result result : results) {
             // Obtener el nombre del archivo de la instancia de Result
             String fileName = result.getDocument().getFileName();
+            String positionString = serializePosition(result.getPosition());
             System.out.println("Nombre del archivo: " + fileName);
             // Obtener la frase encontrada en el documento
-            String item = searchText + "  -->  " + fileName;
+            String item = searchText + "  -->  " + fileName + " --> " + positionString;
             items.add(item);
         }
 
         resultList.setItems(items);
     }
+    private String serializePosition(int[] position) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < position.length; i++) {
+            sb.append(position[i]);
+            if (i < position.length - 1) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
+    }
+    public void setTextAreaController(TextAreaController textAreaController) {
+        this.textAreaController = textAreaController;}
 }

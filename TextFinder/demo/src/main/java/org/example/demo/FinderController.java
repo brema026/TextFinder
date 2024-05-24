@@ -323,7 +323,7 @@ public class FinderController implements Initializable {
 
     private Map<String, String> loadedContents = new HashMap<>();
 
-    private void updateTextArea(String selectedFileName) {
+    public void updateTextArea(String selectedFileName) {
         if (loadedContents.containsKey(selectedFileName)) { // Verificar si el contenido ya está cargado
             textAreaController.setContent(loadedContents.get(selectedFileName));
         } else {

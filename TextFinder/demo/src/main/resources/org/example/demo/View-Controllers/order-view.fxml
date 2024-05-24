@@ -4,10 +4,11 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox styleClass="order-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.OrderViewController">
-    <VBox>
-        <Button fx:id="nameButton" mnemonicParsing="false" onAction="#sortName" text="Nombre" />
-        <Button fx:id="dateButton" mnemonicParsing="false" onAction="#sortDate" text="Fecha" />
-        <Button fx:id="sizeButton" mnemonicParsing="false" onAction="#sortSize" text="Tamaño" />
-    </VBox>
+<?import javafx.scene.layout.HBox?>
+<VBox styleClass="order-area" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.OrderViewController" alignment="CENTER">
+    <HBox spacing="20" alignment="CENTER">
+        <Button fx:id="nameButton" mnemonicParsing="false" onAction="#sortName" text="Nombre" styleClass="order-button"/>
+        <Button fx:id="dateButton" mnemonicParsing="false" onAction="#sortDate" text="Fecha" styleClass="order-button" />
+        <Button fx:id="sizeButton" mnemonicParsing="false" onAction="#sortSize" text="Tamaño" styleClass="order-button"/>
+    </HBox>
 </VBox>
