@@ -42,12 +42,12 @@ public class AppController implements Initializable {
         resultController.setFinderController(finderController);
         orderController.setFinderController(finderController);
 
-        DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
-        try {
-            documentParser.parseDocumentsInFolder(new File("documents")); // Llamar al método parseDocumentsInFolder() de la instancia
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        DocumentParser documentParser = new DocumentParser(); // Crear una instancia de DocumentParser
+//        try {
+//            documentParser.parseDocumentsInFolder(new File("documents")); // Llamar al método parseDocumentsInFolder() de la instancia
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
     private void loadFinderSection() {
 

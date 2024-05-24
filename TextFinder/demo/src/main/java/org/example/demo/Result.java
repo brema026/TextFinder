@@ -31,6 +31,9 @@ public class Result {
         return fragment;
     }
 
+    public int[] getPosition() {
+        return position;
+    }
     public boolean isHighlighted() {
         return isHighlighted;
     }
