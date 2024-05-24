@@ -51,6 +51,10 @@ public class SinglyLinkedList<T> implements Iterable<T> {
         return size;
     }
 
+    public Node<T> getHead() {
+        return head;
+    }
+
     /**
      * Checks if a given element is contained on the list.
      *

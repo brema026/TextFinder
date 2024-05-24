@@ -38,8 +38,6 @@ public class LibraryManager {
         } else {
             String filePath = file.getPath();
             String fileName = file.getName();
-
-            // Checks file extension
             String fileExtension = getFileExtension(filePath);
             DocumentType documentType = switch (fileExtension) {
                 case "txt" -> DocumentType.TXT;
@@ -47,15 +45,9 @@ public class LibraryManager {
                 case "docx" -> DocumentType.DOCX;
                 default -> throw new Exception("The given file is not a valid file.");
             };
-
-            // Reads the file
             String fileContent = readFile(file);
-
-            // Creates the document object
             Document document = new Document(filePath, documentType, fileName,
                     file.lastModified(), file.length(), fileContent);
-
-            // Add the object to the list
             documents.add(document);
         }
     }
@@ -118,20 +110,17 @@ public class LibraryManager {
         if (files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    Document document = new Document(file.getPath(), null, file.getName(), null, null, null);
-                    documents.add(document);
+                    try {
+                        addFile(file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Gets the library documents list.
-     *
-     * @return The library documents list.
-     */
-
-    public void quicksort() {
+    public void quicksort(SinglyLinkedList<Document> documents) {
         quicksort(documents, 0, documents.getSize() - 1);
     }
 
@@ -145,19 +134,23 @@ public class LibraryManager {
 
     private int partition(SinglyLinkedList<Document> documents, int low, int high) {
         Document pivot = documents.get(high);
-        int i = (low - 1);
+        String pivotName = pivot.getFileName().toLowerCase();
+        int i = low - 1;
         for (int j = low; j < high; j++) {
-            if (documents.get(j).getFileName().compareTo(pivot.getFileName()) < 0) {
+            if (documents.get(j).getFileName().toLowerCase().compareTo(pivotName) <= 0) {
                 i++;
-                Document temp = documents.get(i);
-                documents.set(i, documents.get(j));
-                documents.set(j, temp);
+                swap(documents, i, j);
             }
         }
-        Document temp = documents.get(i + 1);
-        documents.set(i + 1, documents.get(high));
-        documents.set(high, temp);
+        swap(documents, i + 1, high);
         return i + 1;
+    }
+
+    private void swap(SinglyLinkedList<Document> documents, int i, int j) {
+        if (i == j) return;
+        Document temp = documents.get(i);
+        documents.set(i, documents.get(j));
+        documents.set(j, temp);
     }
 
     public void bubblesort() {

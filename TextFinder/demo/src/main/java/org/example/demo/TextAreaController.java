@@ -55,27 +55,19 @@ public class TextAreaController implements Initializable {
 
     public void highlightWord(String content, String word) {
         textFlow.getChildren().clear();
-
-        // Patrón para buscar la palabra (ignorando mayúsculas y minúsculas)
         Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(content);
 
         int lastMatchEnd = 0;
         while (matcher.find()) {
-            // Agrega el texto entre las coincidencias anteriores y la actual
             if (matcher.start() > lastMatchEnd) {
                 String beforeText = content.substring(lastMatchEnd, matcher.start());
                 textFlow.getChildren().add(new Text(beforeText));
             }
-
-            // Agrega la palabra resaltada
             String highlightedText = content.substring(matcher.start(), matcher.end());
             textFlow.getChildren().add(createHighlightedText(highlightedText));
-
             lastMatchEnd = matcher.end();
         }
-
-        // Agrega el texto después de la última coincidencia
         if (lastMatchEnd < content.length()) {
             String afterText = content.substring(lastMatchEnd);
             textFlow.getChildren().add(new Text(afterText));
@@ -86,26 +78,19 @@ public class TextAreaController implements Initializable {
         textFlow.getChildren().clear();
 
         if (!phrase.isEmpty() && !content.isEmpty()) {
-            // Crear un patrón de búsqueda con la frase completa
             Pattern pattern = Pattern.compile("\\b" + Pattern.quote(phrase) + "\\b", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(content);
 
             int lastMatchEnd = 0;
             while (matcher.find()) {
-                // Agregar el texto entre las coincidencias anteriores y la actual
                 if (matcher.start() > lastMatchEnd) {
                     String beforeText = content.substring(lastMatchEnd, matcher.start());
                     textFlow.getChildren().add(new Text(beforeText));
                 }
-
-                // Agregar la frase resaltada
                 String highlightedText = content.substring(matcher.start(), matcher.end());
                 textFlow.getChildren().add(createHighlightedText(highlightedText));
-
                 lastMatchEnd = matcher.end();
             }
-
-            // Agregar el texto después de la última coincidencia
             if (lastMatchEnd < content.length()) {
                 String afterText = content.substring(lastMatchEnd);
                 textFlow.getChildren().add(new Text(afterText));
