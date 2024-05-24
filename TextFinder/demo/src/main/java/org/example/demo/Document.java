@@ -34,57 +34,31 @@ public class Document {
         this.content = content;
     }
 
-    /**
-     * Gets the document path.
-     *
-     * @return The document path.
-     */
     public String getPath() {
         return path;
     }
 
-    /**
-     * Gets the file name of the document.
-     *
-     * @return The file name of the document.
-     */
     public String getFileName() {
         return fileName;
     }
 
-    /**
-     * Gets the document type.
-     *
-     * @return The document type.
-     */
     public DocumentType getType() {
         return type;
     }
 
-    /**
-     * Gets the document last modified date in a readable format.
-     *
-     * @return The document last modified date in a readable format.
-     */
+    public Long getDate() {
+        return date != null ? date : 0L;
+    }
+
     public String getFormattedDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(new Date(date));
     }
 
-    /**
-     * Gets the document size in bytes.
-     *
-     * @return The document size.
-     */
     public Long getSize() {
-        return size;
+        return size != null ? size : 0L;
     }
 
-    /**
-     * Gets the document content.
-     *
-     * @return The document content.
-     */
     public String getContent() {
         return content;
     }

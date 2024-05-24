@@ -49,14 +49,9 @@ public class DocumentParser {
                 content.append(line).append("\n");
                 String[] words = line.split("\\s+");
                 for (String word : words) {
-                    // Obtener la fecha y el tamaño del archivo
-                    Long date = file.lastModified(); // Obtener la fecha de última modificación del archivo
-                    Long size = file.length(); // Obtener el tamaño del archivo en bytes
-
-                    // Supongamos que el tipo de documento es TXT
+                    Long date = file.lastModified();
+                    Long size = file.length();
                     DocumentType type = DocumentType.TXT;
-
-                    // Creamos el objeto Document con los parámetros obtenidos
                     tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
                     System.out.println("Se agregó la palabra '" + word.toLowerCase() + "' al árbol AVL.");
                 }
@@ -69,15 +64,10 @@ public class DocumentParser {
         try (PDDocument document = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
             String content = stripper.getText(document);
-
-            // Obtener la fecha y el tamaño del archivo
-            Long date = file.lastModified(); // Obtener la fecha de última modificación del archivo
-            Long size = file.length(); // Obtener el tamaño del archivo en bytes
-
-            // Supongamos que el tipo de documento es PDF
+            Long date = file.lastModified();
+            Long size = file.length();
             DocumentType type = DocumentType.PDF;
-
-            String[] words = content.split("\\s+"); // Dividir el contenido en palabras
+            String[] words = content.split("\\s+");
             int position = 0;
             for (String word : words) {
                 tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
@@ -93,15 +83,11 @@ public class DocumentParser {
              XWPFDocument document = new XWPFDocument(fis);
              XWPFWordExtractor extractor = new XWPFWordExtractor(document)) {
             String content = extractor.getText();
-
-            // Obtener la fecha y el tamaño del archivo
-            Long date = file.lastModified(); // Obtener la fecha de última modificación del archivo
-            Long size = file.length(); // Obtener el tamaño del archivo en bytes
-
-            // Supongamos que el tipo de documento es DOCX
+            Long date = file.lastModified();
+            Long size = file.length();
             DocumentType type = DocumentType.DOCX;
 
-            String[] words = content.split("\\s+"); // Dividir el contenido en palabras
+            String[] words = content.split("\\s+");
             int position = 0;
             for (String word : words) {
                 tree.insert(word.toLowerCase(), new Document(file.getAbsolutePath(), type, file.getName(), date, size, ""), position++);
@@ -138,7 +124,6 @@ public class DocumentParser {
                         parseDocxFile(file);
                         break;
                     default:
-                        // Ignorar archivos con extensiones no compatibles
                         break;
                 }
             }
