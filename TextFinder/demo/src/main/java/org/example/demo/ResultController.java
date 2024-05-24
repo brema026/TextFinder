@@ -82,10 +82,12 @@ public class ResultController implements Initializable {
         List<String> allFileNames = finderController.getAllFileNames(); // Obtener todos los nombres de archivo
 
         for (String result : results) {
-            // Crear el elemento que mostrará el texto buscado junto con todos los nombres de archivo
+            // Crear el elemento que mostrará el texto buscado junto con el nombre del archivo en el que se encontró
             for (String fileName : allFileNames) {
-                String item = result + "  -->  " + fileName;
-                items.add(item);
+                if (result.contains(fileName)) {
+                    String item = result;
+                    items.add(item);
+                }
             }
         }
 

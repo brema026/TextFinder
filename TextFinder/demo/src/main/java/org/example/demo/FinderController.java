@@ -177,23 +177,52 @@ public class FinderController implements Initializable {
     }
 
     private void searchPhrase(String phrase) {
-        String content = textAreaController.getContent();
+        String searchText = phrase.toLowerCase();
+        List<String> foundPhrases = new ArrayList<>();
+        List<String> allFileNames = getAllFileNames();
 
-        if (!phrase.isEmpty() && !content.isEmpty()) {
-            List<String> foundPhrases = textAreaController.highlightPhrase(content, phrase);
-            if (foundPhrases != null && !foundPhrases.isEmpty()) {
-                System.out.println("Resultados de la búsqueda de la frase:");
-                for (String foundPhrase : foundPhrases) {
-                    System.out.println(foundPhrase);
+        for (String fileName : allFileNames) {
+            String content = loadFileContent(fileName);
+
+            if (!content.isEmpty()) {
+                // Buscar la frase en el contenido del archivo
+                if (content.toLowerCase().contains(searchText)) {
+                    List<String> phrases = textAreaController.highlightPhrase(content, searchText);
+                    if (phrases != null && !phrases.isEmpty()) {
+                        for (String foundPhrase : phrases) {
+                            foundPhrases.add(foundPhrase + "  -->  " + fileName);
+                        }
+                    }
                 }
-                if (resultController != null) {
-                    resultController.displayStringResults(foundPhrases.toArray(new String[0]));
-                }
-            } else {
-                System.out.println("No se encontraron resultados para la búsqueda de la frase.");
             }
+        }
+
+        if (foundPhrases.isEmpty()) {
+            System.out.println("No se encontraron resultados para la búsqueda de la frase.");
         } else {
-            System.out.println("La frase o el contenido están vacíos.");
+            System.out.println("Resultados de la búsqueda de la frase:");
+            for (String foundPhrase : foundPhrases) {
+                System.out.println(foundPhrase);
+            }
+            if (resultController != null) {
+                resultController.displayStringResults(foundPhrases.toArray(new String[0]));
+            }
+        }
+    }
+
+    private String loadFileContent(String fileName) {
+        if (loadedContents.containsKey(fileName)) {
+            return loadedContents.get(fileName);
+        } else {
+            File file = new File(storageFolder, fileName);
+            try {
+                String content = documentParser.parseDocument(file);
+                loadedContents.put(fileName, content);
+                return content;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "";
+            }
         }
     }
 
