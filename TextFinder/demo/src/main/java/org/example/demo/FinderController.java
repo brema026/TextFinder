@@ -120,6 +120,11 @@ public class FinderController implements Initializable {
         return palabra;
     }
 
+    public List<String> getAllFileNames() {
+        ObservableList<String> loadedFileNames = libraryListView.getItems();
+        return new ArrayList<>(loadedFileNames);
+    }
+
     private void searchText() throws IllegalArgumentException, NoSuchElementException {
         String searchText = finderText.getText(); // No convertir la frase buscada a minúsculas
 
@@ -167,11 +172,23 @@ public class FinderController implements Initializable {
         String content = textAreaController.getContent(); // Obtener el contenido del TextArea
 
         if (!phrase.isEmpty() && !content.isEmpty()) {
-            textAreaController.highlightPhrase(content, phrase);
+            List<String> foundPhrases = textAreaController.highlightPhrase(content, phrase);
+            if (foundPhrases != null && !foundPhrases.isEmpty()) {
+                System.out.println("Resultados de la búsqueda de la frase:");
+                for (String foundPhrase : foundPhrases) {
+                    System.out.println(foundPhrase);
+                }
+                if (resultController != null) {
+                    resultController.displayStringResults(foundPhrases.toArray(new String[0]));
+                }
+            } else {
+                System.out.println("No se encontraron resultados para la búsqueda de la frase.");
+            }
         } else {
             System.out.println("La frase o el contenido están vacíos.");
         }
     }
+
 
     public void setTextAreaController(TextAreaController textAreaController) {
         this.textAreaController = textAreaController;
@@ -255,17 +272,24 @@ public class FinderController implements Initializable {
         libraryListView.refresh();
     }
 
+    private Map<String, String> loadedContents = new HashMap<>();
+
     private void updateTextArea(String selectedFileName) {
-        File file = new File(storageFolder, selectedFileName);
-        try {
-            String content = documentParser.parseDocument(file);
-            if (textAreaController != null) {
-                textAreaController.setContent(content);
-            } else {
-                System.err.println("TextAreaController no ha sido inicializado.");
+        if (loadedContents.containsKey(selectedFileName)) { // Verificar si el contenido ya está cargado
+            textAreaController.setContent(loadedContents.get(selectedFileName));
+        } else {
+            File file = new File(storageFolder, selectedFileName);
+            try {
+                String content = documentParser.parseDocument(file);
+                if (textAreaController != null) {
+                    textAreaController.setContent(content);
+                    loadedContents.put(selectedFileName, content); // Agregar el contenido cargado al mapa
+                } else {
+                    System.err.println("TextAreaController no ha sido inicializado.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

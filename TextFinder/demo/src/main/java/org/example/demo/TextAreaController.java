@@ -3,6 +3,7 @@ package org.example.demo;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -48,9 +49,11 @@ public class TextAreaController implements Initializable {
         return contentBuilder.toString();
     }
     public void setContent(String content) {
-        textFlow.getChildren().clear();
-
-        textFlow.getChildren().add(new Text(content));
+        String currentContent = getContent(); // Obtener el contenido actual del TextFlow
+        if (!content.equals(currentContent)) { // Verificar si el nuevo contenido es diferente al contenido actual
+            textFlow.getChildren().clear();
+            textFlow.getChildren().add(new Text(content));
+        }
     }
 
     public void highlightWord(String content, String word) {
@@ -82,30 +85,28 @@ public class TextAreaController implements Initializable {
         }
     }
 
-    public void highlightPhrase(String content, String phrase) {
+    public List<String> highlightPhrase(String content, String phrase) {
         textFlow.getChildren().clear();
+        List<String> foundPhrases = new ArrayList<>();
 
         if (!phrase.isEmpty() && !content.isEmpty()) {
-            // Crear un patrón de búsqueda con la frase completa
             Pattern pattern = Pattern.compile("\\b" + Pattern.quote(phrase) + "\\b", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(content);
 
             int lastMatchEnd = 0;
             while (matcher.find()) {
-                // Agregar el texto entre las coincidencias anteriores y la actual
                 if (matcher.start() > lastMatchEnd) {
                     String beforeText = content.substring(lastMatchEnd, matcher.start());
                     textFlow.getChildren().add(new Text(beforeText));
                 }
 
-                // Agregar la frase resaltada
                 String highlightedText = content.substring(matcher.start(), matcher.end());
+                foundPhrases.add(highlightedText);
                 textFlow.getChildren().add(createHighlightedText(highlightedText));
 
                 lastMatchEnd = matcher.end();
             }
 
-            // Agregar el texto después de la última coincidencia
             if (lastMatchEnd < content.length()) {
                 String afterText = content.substring(lastMatchEnd);
                 textFlow.getChildren().add(new Text(afterText));
@@ -113,6 +114,7 @@ public class TextAreaController implements Initializable {
         } else {
             System.out.println("La frase o el contenido están vacíos.");
         }
+        return foundPhrases;
     }
 
 
