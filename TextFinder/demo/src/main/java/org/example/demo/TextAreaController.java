@@ -2,6 +2,8 @@ package org.example.demo;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
+import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +14,15 @@ import java.util.regex.Pattern;
 import javafx.scene.Node;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.control.ScrollPane;
 
 public class TextAreaController implements Initializable {
 
     @FXML
     public TextFlow textFlow;
+    @FXML
+    public ScrollPane scrollPane;
+
     public void initialize(URL location, ResourceBundle resources){
         setText("Esto es una ", "palabra", " destacada.");
     }
@@ -108,9 +114,6 @@ public class TextAreaController implements Initializable {
         return foundPhrases;
     }
 
-
-
-
     /**
      * Creates a Text node with the specified text and applies a highlighting style to it.
      *
@@ -122,5 +125,33 @@ public class TextAreaController implements Initializable {
         highlightedText.getStyleClass().add("highlightedText");
 
         return highlightedText;
+    }
+    public void focusWord(int position) {
+        if (position >= 0 && position < textFlow.getChildren().size()) {
+            Node node = textFlow.getChildren().get(position);
+            if (node instanceof Text) {
+                Text textNode = (Text) node;
+                double layoutY = textNode.getBoundsInParent().getMinY();
+                double layoutHeight = textFlow.getHeight();
+                double visibleHeight = scrollPane.getViewportBounds().getHeight();
+
+                System.out.println("layoutY: " + layoutY);
+                System.out.println("layoutHeight: " + layoutHeight);
+                System.out.println("visibleHeight: " + visibleHeight);
+
+                // Calcular el desplazamiento necesario para que el nodo esté centrado
+                double scrollPosition = Math.max(0, layoutY - (visibleHeight / 2));
+
+                System.out.println("scrollPosition: " + scrollPosition);
+
+                // Ajustar el desplazamiento máximo para no exceder el contenido visible
+                scrollPosition = Math.min(scrollPosition, layoutHeight - visibleHeight);
+
+                System.out.println("Adjusted scrollPosition: " + scrollPosition);
+
+                // Establecer el valor de desplazamiento vertical del ScrollPane
+                scrollPane.setVvalue(scrollPosition / layoutHeight);
+            }
+        }
     }
 }

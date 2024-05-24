@@ -5,7 +5,7 @@
 <?import javafx.scene.text.TextFlow?>
 
 <VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.TextAreaController">
-      <ScrollPane VBox.vgrow="ALWAYS" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+      <ScrollPane fx:id="scrollPane">
             <content>
                   <TextFlow fx:id="textFlow" layoutX="20" layoutY="20" styleClass="text-area" />
             </content>
